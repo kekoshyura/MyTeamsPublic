@@ -1,0 +1,48 @@
+﻿@page "/matchdays"
+@using MyTeams.Client.Services
+@using MyTeamsCore
+@using MyTeamsCore.Common
+@using App = MyTeams.Client.App
+@inject IMatchService MatchService
+@inject App Session
+@inject NavigationManager NavigationManager
+
+<h3>MatchDays</h3>
+
+<div style="margin-left:0; margin-bottom: 5px;">
+    <button style="margin-top: 5px; padding: 8px;" class="date" @onclick="AddNewMatchDay">Add New MatchDay</button>
+</div>
+
+@foreach (var  day in App.DatabaseCache.MatchDays) {
+    <button class="date" @onclick="() => SelectMatchDay(day.Id)">@($"{day.Date.Day}.{day.Date.Month:D2}")</button>
+}
+@if (SelectedMatchDayId >= 0) {
+    <MatchDayView MatchDay="App.GetMatchDay(SelectedMatchDayId)" ShowDeleteButton="true"></MatchDayView>
+}
+
+@code {
+    [CascadingParameter] public App App { get; set; }
+    public int SelectedMatchDayId { get; set; }
+
+    protected override async Task 
+    OnInitializedAsync() {
+        if(App.DatabaseCache == null)
+            new AppCommand(app => app.LoadLastMatchDay());
+        else {
+            SelectedMatchDayId = App.DatabaseCache.MatchDays.TryGetFirst(out var firstDay) ? firstDay.Id : -1;
+        }
+    }
+
+    public void
+    SelectMatchDay(int id) {
+        SelectedMatchDayId = id;
+    }
+
+    public void
+    AddNewMatchDay() {
+        NavigationManager.NavigateTo("addteam");
+    }
+
+    public void
+    AddNewShortMatchDay() => NavigationManager.NavigateTo("addshortmatchday");
+}

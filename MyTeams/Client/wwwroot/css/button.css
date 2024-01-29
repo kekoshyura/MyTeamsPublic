@@ -1,0 +1,113 @@
+﻿.segoe-icon {
+    font-family: "Segoe MDL2 Assets";
+}
+
+button {
+    cursor: default;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    text-align: initial
+}
+
+    button:disabled {
+        opacity: 0.3;
+    }
+
+.icon-button {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(var(--font-color-rgb), 0.65);
+    border-radius: 2px;
+    margin-left: 10px;
+}
+
+    .icon-button:hover {
+        border-color: cadetblue;
+        background-color: #182533;
+    }
+
+.bordered-button {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 4px 16px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+}
+
+    .bordered-button:hover {
+        color: white;
+        border-color: white;
+    }
+
+    .bordered-button:focus {
+        border-color: white;
+    }
+
+
+.button-main {
+    background: #17212b;
+    border-radius: 4px;
+    margin-right: 5px;
+    color: cadetblue;
+}
+
+    .button-main:focus {
+        border: solid;
+        border-width: 2px;
+        border-color: #0a58ca;
+    }
+
+
+    .btn-primary:hover{
+        color:white;
+        background-color:none;
+
+    }
+
+.button-main-show {
+    background: #17212b;
+    border-radius: 4px;
+    margin-right: 5px;
+    color: cadetblue;
+    padding: 6px 12px 6px 12px;
+    
+}
+
+    .button-main-show.date.active {
+        background-color: #007bff; /* Колір активної кнопки */
+        color: #fff; /* Колір тексту активної кнопки */
+    }
+
+    .button-main-show:focus {
+        
+        border-color: #0a58ca;
+        box-shadow: 0 0 0 0.25rem rgba(49,132,253,.5);
+    }
+
+.btn-outline-info:active{
+
+}
+
+.button-main:disabled {
+    cursor: not-allowed;
+    background-color: #eee;
+    background-image: linear-gradient(to top, #ddd, #eee 33%);
+}
+
+
+.icon-button_mini { height: 32px; width: 32px;font-size: 11px;}
+.icon-button_micro { height: 20px; width: 20px;font-size: 10px;}
+
+
+.btn-change {
+    background-color: #17212b;
+    border: none;
+    color: cadetblue;
+}

@@ -1,0 +1,50 @@
+
+.team-red[b-q1s3z8m4bn] {
+    background: #7d4f4f;
+}
+
+.team-blue[b-q1s3z8m4bn] {
+    background: #7799ac;
+}
+
+.team-green[b-q1s3z8m4bn] {
+    background: #426748;
+}
+
+
+table tr:first-child td:first-child[b-q1s3z8m4bn] {
+    border-top-left-radius: 10px;
+}
+
+table tr:first-child td:last-child[b-q1s3z8m4bn] {
+    border-top-right-radius: 10px;
+}
+
+table tr:last-child td:first-child[b-q1s3z8m4bn] {
+    border-bottom-left-radius: 10px;
+}
+
+table tr:last-child td:last-child[b-q1s3z8m4bn] {
+    border-bottom-right-radius: 10px;
+}
+
+table[b-q1s3z8m4bn] {
+    white-space: nowrap;
+}
+
+
+table thead[b-q1s3z8m4bn] {
+    color: cadetblue;
+    border-style: hidden;
+}
+table tbody[b-q1s3z8m4bn] {
+    border-style: hidden;
+}
+
+.date[b-q1s3z8m4bn] {
+    background: #17212b;
+    border-color: #17212b;
+    border-radius: 4px;
+    margin-right: 5px;
+    color: cadetblue;
+}

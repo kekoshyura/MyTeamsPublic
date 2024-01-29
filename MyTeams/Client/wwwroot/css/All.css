@@ -1,0 +1,326 @@
+﻿/* /Components/TeamsTable.razor.rz.scp.css */
+
+.team-red[b-q1s3z8m4bn] {
+    background: #7d4f4f;
+}
+
+.team-blue[b-q1s3z8m4bn] {
+    background: #7799ac;
+}
+
+.team-green[b-q1s3z8m4bn] {
+    background: #426748;
+}
+
+
+table tr:first-child td:first-child[b-q1s3z8m4bn] {
+    border-top-left-radius: 10px;
+}
+
+table tr:first-child td:last-child[b-q1s3z8m4bn] {
+    border-top-right-radius: 10px;
+}
+
+table tr:last-child td:first-child[b-q1s3z8m4bn] {
+    border-bottom-left-radius: 10px;
+}
+
+table tr:last-child td:last-child[b-q1s3z8m4bn] {
+    border-bottom-right-radius: 10px;
+}
+
+table[b-q1s3z8m4bn] {
+    white-space: nowrap;
+}
+
+
+table thead[b-q1s3z8m4bn] {
+    color: cadetblue;
+    border-style: hidden;
+}
+
+table tbody[b-q1s3z8m4bn] {
+    border-style: hidden;
+}
+
+.table-container {
+    max-height: 700px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    background-color: #182533;
+    border-radius: 4px;
+}
+
+.btn-outline-light:disabled{
+    cursor: not-allowed;
+}
+
+.custom-checkbox-container {
+    display: flex;
+    align-items: center;
+}
+
+.custom-checkbox {
+    width: 15px; 
+    height: 15px;
+}
+
+.custom-checkbox-lable{
+    margin-left: 4px;
+    margin-top: 2px;
+}
+
+.button-create {
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.date[b-q1s3z8m4bn] {
+    background: #17212b;
+    border-color: #17212b;
+    border-radius: 4px;
+    margin-right: 5px;
+    color: cadetblue;
+}
+/* /Pages/MatchDays.razor.rz.scp.css */
+
+.date[b-kvc2ogmu88] {
+    background: #17212b;
+    border-color: #17212b;
+    border-radius: 4px;
+    margin-right: 5px;
+    color: cadetblue;
+}
+/* /Pages/MatchDayView.razor.rz.scp.css */
+
+.match-day[b-yikd0oqg01] {
+    background: #182533;
+    color: aliceblue;
+    border-color: #182533;
+}
+
+.team-red[b-yikd0oqg01] {
+    background: #7d4f4f;
+    border-color: #7d4f4f;
+}
+
+.team-blue[b-yikd0oqg01] {
+    background: #7799ac;
+    border-color: #7799ac;
+}
+
+.team-green[b-yikd0oqg01] {
+    background: #426748; /* #26b050;*/
+    border-color: #426748;
+}
+
+.team-dialog[b-yikd0oqg01] {
+    position: absolute;
+    z-index: 100;
+    border-radius: 4px;
+    background-color: #182533;
+}
+
+.date[b-yikd0oqg01] {
+    background: #17212b;
+    border-color: #17212b;
+    border-radius: 4px;
+    margin-right: 5px;
+    color: cadetblue;
+}
+/* /Pages/PlayerStatsView.razor.rz.scp.css */
+
+.stats-table[b-9xdwjwdfho] {
+    background: #182533;
+    color: aliceblue;
+    border-color: #182533;
+}
+
+table[b-9xdwjwdfho] {
+    white-space: nowrap;
+}
+
+table thead[b-9xdwjwdfho] {
+    color: aliceblue;
+    border-style: hidden;
+}
+
+table tr:first-child td:first-child[b-9xdwjwdfho] {
+    border-top-left-radius: 10px;
+}
+
+table tr:first-child td:last-child[b-9xdwjwdfho] {
+    border-top-right-radius: 10px;
+}
+
+table tr:last-child td:first-child[b-9xdwjwdfho] {
+    border-bottom-left-radius: 10px;
+}
+
+table tr:last-child td:last-child[b-9xdwjwdfho] {
+    border-bottom-right-radius: 10px;
+}
+
+.table-cell__win-draw-lose[b-9xdwjwdfho] {
+    color: gray;
+}
+
+.table-cell__winrate[b-9xdwjwdfho] {
+    color: gold;
+}
+
+.table-cell__games[b-9xdwjwdfho] {
+    color: cadetblue;
+}
+/* /Shared/MainLayout.razor.rz.scp.css */
+.page[b-xdj9a1amt7] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    color: aliceblue;
+    overflow: auto;
+}
+
+.stats-page[b-xdj9a1amt7] {
+    background: #0e1621;
+}
+
+main[b-xdj9a1amt7] {
+    flex: 1;
+}
+
+.sidebar[b-xdj9a1amt7] {
+    background: #17212b;
+}
+
+.top-row[b-xdj9a1amt7] {
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: flex-end;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+}
+
+    .top-row[b-xdj9a1amt7] a, .top-row[b-xdj9a1amt7] .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+        text-decoration: none;
+    }
+
+        .top-row[b-xdj9a1amt7] a:hover, .top-row[b-xdj9a1amt7] .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        .top-row[b-xdj9a1amt7] a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+@media (max-width: 640.98px) {
+    .top-row:not(.auth)[b-xdj9a1amt7] {
+        display: none;
+    }
+
+    .top-row.auth[b-xdj9a1amt7] {
+        justify-content: space-between;
+    }
+
+    .top-row[b-xdj9a1amt7] a, .top-row[b-xdj9a1amt7] .btn-link {
+        margin-left: 0;
+    }
+}
+
+@media (min-width: 641px) {
+    .page[b-xdj9a1amt7] {
+        flex-direction: row;
+    }
+
+    .sidebar[b-xdj9a1amt7] {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .top-row[b-xdj9a1amt7] {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .top-row.auth[b-xdj9a1amt7] a:first-child {
+        flex: 1;
+        text-align: right;
+        width: 0;
+    }
+
+    .top-row[b-xdj9a1amt7], article[b-xdj9a1amt7] {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
+/* /Shared/NavMenu.razor.rz.scp.css */
+.navbar-toggler[b-xbx2iwpbga] {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.top-row[b-xbx2iwpbga] {
+    height: 3.5rem;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.navbar-brand[b-xbx2iwpbga] {
+    font-size: 1.1rem;
+}
+
+.oi[b-xbx2iwpbga] {
+    width: 2rem;
+    font-size: 1.1rem;
+    vertical-align: text-top;
+    top: -2px;
+}
+
+.nav-item[b-xbx2iwpbga] {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+
+.nav-item:first-of-type[b-xbx2iwpbga] {
+    padding-top: 1rem;
+}
+
+.nav-item:last-of-type[b-xbx2iwpbga] {
+    padding-bottom: 1rem;
+}
+
+.nav-item[b-xbx2iwpbga] a {
+    color: #d7d7d7;
+    border-radius: 4px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+}
+
+    .nav-item[b-xbx2iwpbga] a.active {
+        background-color: rgba(255,255,255,0.25);
+        color: white;
+    }
+
+    .nav-item[b-xbx2iwpbga] a:hover {
+        background-color: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+@media (min-width: 641px) {
+    .navbar-toggler[b-xbx2iwpbga] {
+        display: none;
+    }
+
+    .collapse[b-xbx2iwpbga] {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+    }
+}

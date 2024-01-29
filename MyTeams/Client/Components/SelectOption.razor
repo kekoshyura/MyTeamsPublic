@@ -1,0 +1,18 @@
+﻿@typeparam TValue
+
+@code {
+
+    [CascadingParameter]
+    public SelectBox<TValue> ParentSelect { get;set;}
+
+    [Parameter]
+    public TValue Value { get;set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get;set;}
+
+    protected override void 
+    OnInitialized() {
+        ParentSelect.OnSelectedOptionInitialized(this);
+    }
+}

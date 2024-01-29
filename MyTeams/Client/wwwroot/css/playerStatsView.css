@@ -1,0 +1,50 @@
+﻿.stats-table {
+    background: #182533;
+    color: aliceblue;
+    border-color: #182533;
+}
+
+table {
+    white-space: nowrap;
+}
+
+    table thead {
+        color: aliceblue;
+        border-style: hidden;
+    }
+
+    table tr:first-child td:first-child {
+        border-top-left-radius: 10px;
+    }
+
+    table tr:first-child td:last-child {
+        border-top-right-radius: 10px;
+    }
+
+    table tr:last-child td:first-child {
+        border-bottom-left-radius: 10px;
+    }
+
+    table tr:last-child td:last-child {
+        border-bottom-right-radius: 10px;
+    }
+
+.table-cell__win-draw-lose {
+    color: gray;
+    font-weight: 600;
+}
+
+.table-cell__winrate {
+    color: gold;
+    font-weight: 600;
+}
+
+.table-cell__games {
+    color: cadetblue;
+    font-weight: 600;
+}
+
+.bold-text {
+    font-weight: 600;
+}
+

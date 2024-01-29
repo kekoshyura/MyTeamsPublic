@@ -1,0 +1,11 @@
+﻿.date {
+    background: #17212b;
+    border-color: #17212b;
+    border-radius: 4px;
+    margin-right: 5px;
+    color: cadetblue;
+}
+
+.date:hover{
+    color:white;
+}

@@ -1,0 +1,47 @@
+﻿@using MyTeamsCore.Common
+ <div class="col-sm fit-content container @Team.GetTeamColor()" style="border-radius: 4px; margin-right: 6px;">
+    @if(!Stats.IsEmpty){
+        <div>@($"{Team.Name} ({Stats.Rating} [{Stats.Goals}|{Stats.Against}])")</div>
+    }
+    <div class="horizontal-separator"></div>
+    @foreach(var player in Team.Players) {
+        <div class="row">
+            <div class="row-content gap_1x space-between">
+                <div class="no-wrap" >@player.Name (@player.Nickname)</div>
+                <DropDownMenu>
+                    <MenuHeader>
+                        <IconButton Class="btn-change icon-button_micro" Icon="Icons.swap_horiz"></IconButton>
+                    </MenuHeader>
+                    <MenuItems>
+                        @foreach (var otherPlayer in GetOtherPlayers()){
+                            <DropDownItem Class="no-wrap" OnClick="() => ReplaceTeamPlayer(player, otherPlayer, App)">@otherPlayer.Name (@otherPlayer.Nickname)</DropDownItem>
+                        }
+                    </MenuItems>
+                </DropDownMenu>
+                
+            </div>
+        </div>
+    }
+</div>
+@code {
+        [Parameter] public Team Team { get; set; }
+        [Parameter] public MyTeamsCore.Match Match { get; set; }
+        [Parameter] public TeamStats Stats { get; set; } = new TeamStats(new List<PlayerStats>());
+        [CascadingParameter] MainLayout Window { get; set; }
+        [CascadingParameter] public App App { get; set; }
+        public IEnumerable<Player>
+        GetOtherPlayers() {
+            foreach (var team in App.GetMatchDayTeams(Match.MatchDayId)) {
+                if (Match.HasTeam(team))
+                    continue;
+                foreach (var player in team.Players) {
+                    yield return player;
+                }
+            }
+        }
+
+        public async Task
+        ReplaceTeamPlayer(Player player, Player otherPlayer, App app) {
+            new AppCommand(app => app.SwitchPlayerInTeam(otherPlayer, player, Team.Id)).Dispatch();
+    }
+}

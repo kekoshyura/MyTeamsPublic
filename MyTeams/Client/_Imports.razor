@@ -1,0 +1,23 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop
+@using MyTeams.Client
+@using MyTeams.Client.Shared
+
+@using MyTeams.Client.Components
+@using MyTeams.Client.Services
+@using MyTeams.Client.Messages
+@using MyTeamsCore
+
+@inject App AppSession;
+@inject HttpClient Http
+@inject IPlayerService PlayersService
+@inject ITeamService TeamService
+@inject IMatchService MatchService
+
+@inherits AppUIComponent

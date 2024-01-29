@@ -1,0 +1,42 @@
+﻿@using System.Diagnostics
+@using MyTeamsCore
+@using MyTeams.Client.Components
+@if (!IsEnabled) {
+    <div class="menu-item disabled row space-between gap_2x @IsChecked.T("selected")">
+        <div class="row" style="display: flex; flex-wrap: nowrap; align-items: center">
+            @if (IsChecked) {
+                <span class="segoe-icon" style="margin-right: 8px"></span>
+            }
+            @ChildContent
+        </div>
+        @if(HotKey != null){
+            <span class="priority_middle uppercase">@HotKey</span>
+        }
+    </div> 
+}
+else {
+    <div class="menu-item row space-between gap_2x @IsChecked.T("selected")" @onmouseup="OnMouseUp">
+        <div class="row" style="display: flex; flex-wrap: nowrap; align-items: center">
+            @if (IsChecked) {
+                <MyTeamsIcon Value="Icons.Check"/>
+            }
+            @ChildContent
+        </div>
+        @if(HotKey != null){
+            <span class="priority_middle uppercase">@HotKey</span>
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public RenderFragment ChildContent {get;set;}
+    [Parameter] public EventCallback OnClick {get;set;}
+    [Parameter] public string? HotKey { get;set;}
+    [Parameter] public bool IsChecked { get;set;}
+    [Parameter] public bool IsEnabled { get; set; } = true;
+
+    void
+    OnMouseUp() {
+        OnClick.InvokeAsync();
+    }
+} 

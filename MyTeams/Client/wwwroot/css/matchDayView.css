@@ -1,0 +1,28 @@
+﻿.match-day {
+    background: #182533;
+    color: aliceblue;
+    border-color: #182533;
+}
+
+.team-red {
+    background: #7d4f4f;
+    border-color: #7d4f4f;
+}
+
+.team-blue {
+    background: #7799ac;
+    border-color: #7799ac;
+}
+
+.team-green {
+    background: #426748; /* #26b050;*/
+    border-color: #426748;
+}
+
+.team-dialog {
+    position: absolute;
+    z-index: 100;
+    border-radius: 4px;
+    background-color: #182533;
+}
+

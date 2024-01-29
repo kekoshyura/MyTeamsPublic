@@ -1,0 +1,61 @@
+﻿@using App = MyTeams.Client.App
+@inject App Session;
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">MyTeams</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="() => OnTabSelected(AppTabs.Other)">
+                <span class="oi oi-home" aria-hidden="true"></span> Match Day
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="stats" @onclick="() => OnTabSelected(AppTabs.Stats)">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Stats
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="matchdays" @onclick="() => OnTabSelected(AppTabs.Other)">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> MatchDays
+            </NavLink>
+        </div>
+        @if (Session.UserCanEdit()) {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="teams" @onclick="() => OnTabSelected(AppTabs.Other)">
+                <span class="oi oi-plus" aria-hidden="true"></span> Teams
+            </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="players" @onclick="() => OnTabSelected(AppTabs.Other)">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Players
+                </NavLink>
+            </div>
+        }
+
+    </nav>
+</div>
+
+@code {
+    [CascadingParameter] public App App { get; set; }
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu() {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    public void
+    OnTabSelected(AppTabs tab) {
+        App = App with { SelectedTab = tab };
+        // AppSession.SelectedTab = tab;
+    }
+}

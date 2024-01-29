@@ -1,0 +1,546 @@
+﻿@using MyTeams.Client.Inputs;
+@using MyTeams.Client.Services
+@using MyTeamsCore
+@using MyTeamsCore.Common
+@using System.ComponentModel.Design
+@using System.Collections.Immutable;
+
+@using MyTeams.Client.Dialogs
+@using App = MyTeams.Client.App
+@inject HttpClient Http
+@inject IPlayerService PlayersService
+@inject ITeamService TeamService
+@inject IMatchService MatchService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+
+@if (MatchDay != null && Teams.Count > 1){
+    @if(CurrentMatches.Count == 0) {
+        <div class="container" style="grid-gap: 10px">
+            <div class="row">
+                <div class="column">
+                    @if(MatchDay.Teams.Count == 0) {
+                        <div class="row">
+                            Select first match
+                        </div>
+                    }
+                    
+                    @foreach(var match in GetMatches()) {
+                        <button class="btn btn-primary date" @onclick="() => StartMatch(match.t1, match.t2)">@match.t1.Name - @match.t2.Name</button>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else {
+        <div class="container" style="grid-gap: 10px; margin-bottom: 20px; min-width: fit-content">
+            <div class="row">
+                <div class="column match-day">
+                    @foreach(var (index, match) in CurrentMatches.WithIndex()) {
+                        <div class="row gy-2" style="grid-gap: 10px;margin-block: 6px">
+                            <div class="px-3" style="display: flex; flex-direction: row; margin-inline: 5px;justify-content: center;">
+                                @if (true || ShowDeleteButton && !match.IsFinished && App.User != null && index == CurrentMatches.Count) {
+                                    <button class="btn button-main" @onclick="() => DeleteMatch(match)" style="color: #ff6666; margin-right:5px;">Cancel</button>
+                                }
+                                
+                                @if (App.UserCanEdit()) {
+                                    <button class="btn button-main" @onclick="() => CancelGoalTeam1(match)" style="color: #ff6666; margin-right:5px;">-</button>
+                                    <button class="btn button-main" @onclick="() => GoalTeam1(match)" style="color: #26b050">+</button>
+
+                                }
+                                @if(MatchDay.Teams.Count % 2 == 0){
+                                    <DropDownMenu MenuItemsContainerStyle="display: flex; justify-content: space-between; align-items: center; width: 100px;">
+                                        <MenuHeader>
+                                            <div class="px-3 btn  @match.HomeTeam.GetTeamColor()" style="width: 100px;">
+                                                @match.HomeTeam
+                                            </div>
+                                        </MenuHeader>
+                                        <MenuItems>
+                                            @foreach (var player in match.HomeTeam.Players) {
+                                                <div style="width: 100px;">@player.Name</div>
+                                            }
+                                        </MenuItems>
+                                    </DropDownMenu>
+
+                                }
+                                else {
+                                    <div class="px-3 btn  @match.HomeTeam.GetTeamColor()" style="width: 100px;">
+                                        @match.HomeTeam
+                                    </div>
+                                }
+                                <div class="px-3 align-self-center">
+                                    @match.HomeGoals
+                                </div>
+                                <div class="px-3 align-self-center">
+                                    -
+                                </div>
+                                <div class="px-3 align-self-center">
+                                    @match.AwayGoals
+                                </div>
+                                @if (MatchDay.Teams.Count % 2 == 0) {
+                                    <DropDownMenu MenuItemsContainerStyle="display: flex; justify-content: space-between; align-items: center; width: 100px;">
+                                        <MenuHeader>
+                                            <div class="px-3 btn  @match.AwayTeam.GetTeamColor()" style="width: 100px;">
+                                                @match.AwayTeam
+                                            </div>
+                                        </MenuHeader>
+                                        <MenuItems>
+                                            @foreach (var player in match.AwayTeam.Players) {
+                                                <div style="width: 100px;">@player.Name</div>
+                                            }
+                                        </MenuItems>
+                                    </DropDownMenu>
+                                }
+                                else {
+                                    <div class="px-3 btn  @match.AwayTeam.GetTeamColor()" style="width: 100px;">
+                                        @match.AwayTeam
+                                    </div>
+                                }
+                                @if (App.UserCanEdit()) {
+                                    <button class="btn button-main" @onclick="() => CancelGoalTeam2(match)" style="color: #ff6666; margin-right:5px;">-</button>
+                                    <button class="btn button-main" @onclick="() => GoalTeam2(match)" style="color: #26b050">+</button>
+                                }
+
+                                <IconButton Class="button-main" Icon="Icons.Edit" OnClick="() => EditMatch(match, canEdit: index == CurrentMatches.Count)"></IconButton>
+                            </div>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+        @if (!MatchDay.IsFinished) {
+            @if (CurrentMatches.Count == 1 && CurrentMatches[0].Winner == null) {
+                <div class="container" style="grid-gap: 10px">
+                    <div class="row">
+                        @if(MatchDay.Teams.Count % 2 == 0) {
+                            <button class="btn btn-primary date" @onclick="() => AddNewMatch()">Start Next match</button>
+                        }
+                        else {
+                            <div class="column">
+                                <div class="row">
+                                    Select next match
+                                </div>
+                                @foreach (var match in GetMatchesWhileDraw()) {
+                                    <button class="btn btn-primary date" @onclick="() => StartMatch(match.t1, match.t2)">@match.t1.Name - @match.t2.Name</button>
+                                }
+                            </div>
+                        }
+                       
+                    </div>
+                </div>
+            }
+            else if (CurrentMatches.Count < 20){
+                @if (MatchDay.Teams.Count % 2 == 0) {
+                    <button class="btn btn-primary date" @onclick="() => AddNewMatch()">Start Next match</button>
+                }
+                else {
+                    <button class="date" style="padding: 8px;" @onclick="NextMatch">Start Next match</button>
+                }
+            }
+        }
+        @if (MatchDay.Teams.Count % 2 != 0)
+        {
+            <TeamsTable Teams="Teams" CurrentMatches="CurrentMatches" OnTeamClicked="team => App.OpenTeamPlayersDialog(team, matchDay: MatchDay)"></TeamsTable>
+        }
+    }
+
+    @if (MatchDay.Teams.Count % 2 != 0) {
+        <button class="button-main-show date" @onclick="() => IsTeamsShown = !IsTeamsShown">@(IsTeamsShown ? " Hide" : " Show")</button>
+        @if (IsTeamsShown) {
+            <div class="row">
+                @foreach (var team in Teams) {
+                    var stats = App.GetTeamStats(team, MatchDay);
+                    <div class="col-sm fit-content container @team.GetTeamColor()" style="border-radius: 4px; ">
+                        @if (!stats.IsEmpty) {
+                            <div class="container-name">
+                                @($"{team.Name} ({stats.Rating} [{stats.Goals}|{stats.Against}])")
+                                <DropDownMenu>
+                                    <MenuHeader>
+                                        <IconButton Class="icon-button btn-change icon-button_micro" Icon="Icons.swap_horiz"></IconButton>
+                                    </MenuHeader>
+                                    <MenuItems>
+                                        @foreach (var team1 in Teams) {
+                                            if (team.Name != team1.Name) {
+                                                <DropDownItem Class="no-wrap1" OnClick="() => TeamNameSwap(team.Name, team1.Name)">@team1.Name</DropDownItem>
+                                            }
+                                        }
+                                    </MenuItems>
+                                </DropDownMenu>
+                            </div>
+                        }
+                        else {
+                            <div class="container-name">
+                                @($"{team.Name}")
+                                <DropDownMenu>
+                                    <MenuHeader>
+                                        <IconButton Class="btn-change icon-button_mini" Icon="Icons.swap_horiz"></IconButton>
+                                    </MenuHeader>
+                                    <MenuItems>
+                                        @foreach (var team1 in Teams) {
+                                            if (team.Name != team1.Name) {
+                                                <DropDownItem Class="no-wrap1" OnClick="() => TeamNameSwap(team.Name, team1.Name)">@team1.Name</DropDownItem>
+                                            }
+                                        }
+                                    </MenuItems>
+                                </DropDownMenu>
+                            </div>
+                        }
+                        <div class="horizontal-separator"></div>
+                        @if ((MatchDay.Matches.Count == 0 && App.UserCanEdit())) {
+                            <PlayerSwap Team="team" MatchDay="MatchDay"></PlayerSwap>
+                        }
+                        else {
+                            @foreach (var player in team.Players) {
+                                <div>@player.Name (@player.Nickname)</div>
+                            }
+
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+        @if (MatchDay.Matches.Any(match => match.Score.AwayGoals.Any(x => x.Player != null) || match.Score.HomeGoals.Any(x => x.Player != null))) {
+            <table class="table" style="color:cadetblue; border: hidden">
+                <thead style="border: hidden">
+                    <tr>
+                        <th></th>
+                        <th>Player</th>
+                        <th style="cursor: pointer">G</th>
+                    </tr>
+                </thead>
+                <tbody style="border: hidden">
+                    @foreach (var (index, player) in GetGoalsByPlayer().OrderByDescending(x => x.Value).WithIndex()) {
+                        <tr class="stats-table" style="margin-left:40px">
+                            <td class="table-cell__win-draw-lose">@index</td>
+                            <td>
+                                @(
+                                    $"{player.Key.Name} ({player.Key.Nickname})"
+                                    )
+                            </td>
+                            <td class="table-cell__winrate">@player.Value</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    }
+    else {
+        <table>
+            <thead>
+                <tr>
+                    <th>M</th>
+                    <th>W</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var (index, player) in App.Report.Stats.WithIndex()) {
+                    <tr>
+                        <td class="table-cell__win-draw-lose">@index</td>
+                        <td>@($"{player.Player.Name} ({player.Player.Nickname})")</td>
+                        <td>@player.Matches</td>
+                        <td>@player.Wins</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+
+
+}
+else {
+    <div>Loading..</div>
+}
+
+@code {
+    [CascadingParameter] public App App { get; set; }
+    [Parameter] public MatchDay MatchDay { get; set; } 
+    [Parameter] public bool ShowDeleteButton { get; set; }
+    [Parameter] public bool ShowTeamRating { get; set; }
+    public List<MyTeamsCore.Match> CurrentMatches => MatchDay.Matches;
+    public List<Team> Teams => MatchDay.Teams;
+    public bool IsTeamsShown { get; set; } 
+    public string TeamName { get; set; }
+    private string error { get; set; }
+    public ImmutableList<PlayerReportColumns> Columns { get; set; } = Enum.GetValues(typeof(PlayerReportColumns))
+    .Cast<PlayerReportColumns>()
+    .ToImmutableList();
+
+
+    protected override async Task
+    OnInitializedAsync() {
+        try {
+            if(App.DatabaseCache.IsEmpty)
+                new AppCommand(app => app.LoadLastMatchDay()).Dispatch();
+            else
+                new AppCommand(app => app.ReplaceLastMatchDay(newMatchDay: app.GetMatchDay(app.LastDbMatchDay.Id))).Dispatch();
+
+            var stats = App.GetPlayersStatsByMatchDay(App.LastMatchDay).ToImmutableList();
+            new AppCommand(app => app.UpdatePlayersReport(stats, PlayersStatsSeason.AllTime, Columns)).Dispatch();
+
+        }
+        catch (Exception exception) {
+            error = exception.Message;
+        }
+
+    }
+
+
+    public async Task
+    TeamNameSwap(string oldName, string newName){
+        var swapedTeam = Teams.Find(x => x.Name == oldName);
+        var swappingTeam = Teams.Find(x => x.Name == newName);
+        swappingTeam.Name = oldName;
+        swapedTeam.Name = newName;
+        var team1 = new Team(id: swapedTeam.Id, name: swapedTeam.Name, players: swapedTeam.Players, subTeams: new List<Team>());
+        var team2 = new Team(id: swappingTeam.Id, name: swappingTeam.Name, players: swappingTeam.Players, subTeams: new List<Team>());
+        await Http.SendMessage(new RenameTeamMessage(team1));
+        await Http.SendMessage(new RenameTeamMessage(team2));
+        await App.GetTeams();
+        StateHasChanged();
+    }
+
+
+    public async Task
+    EditMatch(MyTeamsCore.Match match, bool canEdit) {
+        new AppCommand(app => app.EditMatch(match, canEdit)).Dispatch();
+        NavigationManager.NavigateTo("match-editor");
+    }
+
+    public async Task
+    AddNewMatch() {
+        List<Player> players = new();
+        List<Team> teamsToCreate = new();
+        foreach (var team in MatchDay.Teams.Take(2).ToList()) {
+            foreach (var player in team.Players) {
+                players.Add(player);
+            }
+        }
+        var teams = AddTeamsToMatchDay(players).ToArray();
+        var messageResponse = await Http.SendAndGetMessage(new AddTeamsToExistMatchDayMessage(teams, MatchDay.Id));
+        if(messageResponse == null) {
+            return;
+        }
+        var result = messageResponse.ReadMessage<TeamsMessage>();
+        StartMatch(result.Teams[0], result.Teams[1]);
+    }
+
+    public async Task
+    NextMatch() {
+        var lastMatch = CurrentMatches[CurrentMatches.Count - 1];
+        var winner = (int?)null;
+        if(CurrentMatches.Count == 1 && lastMatch.IsDraw) {
+
+        }
+        if (CurrentMatches.Count == 1)
+            winner = CurrentMatches[0].Winner;
+        else {
+            var aTeam = CurrentMatches[CurrentMatches.Count - 1].HomeTeam;
+            if (!CurrentMatches[CurrentMatches.Count - 2].HasTeam(aTeam))
+                winner = aTeam.Id;
+            else
+                winner = CurrentMatches[CurrentMatches.Count - 1].AwayTeam.Id;
+        }
+        var winnerTeam = Teams.TryGet(x => x.Id == winner || x.SubTeams.Any(y => y.Id == winner), out var result) ? result : throw new Exception();
+        var otherTeam = Teams.Count > 3 ? throw new NotImplementedException() : Teams.TryGet(x => 
+            x.SubTeams.All(y => y.Id != lastMatch.AwayTeam.Id && y.Id != lastMatch.HomeTeam.Id) && 
+            lastMatch.AwayTeam.Id != x.Id && 
+            lastMatch.HomeTeam.Id != x.Id, out var result1) ? result1 : throw new Exception();
+
+        await StartMatch(winnerTeam, otherTeam);
+    }
+
+    public IEnumerable<(Team t1, Team t2)>
+    GetMatches() {
+        for (var i = 0; i < Teams.Count; i++) {
+            for (var j = i + 1; j < Teams.Count; j++) 
+                yield return (Teams[i], Teams[j]);
+        }
+    }
+
+    public IEnumerable<(Team t1, Team t2)>
+    GetMatchesWhileDraw() {
+        for (var i = 0; i < Teams.Count; i++) {
+            for (var j = i + 1; j < Teams.Count; j++) {
+                if (CurrentMatches[0].HasTeam(Teams[i]) && !CurrentMatches[0].HasTeam(Teams[j])) {
+                    yield return (Teams[i], Teams[j]);
+                }
+            }
+        }
+    }
+
+
+    public async Task
+    StartMatch(Team t1, Team t2 ) {
+        var messageResponse = await Http.SendAndGetMessage(new AddMatchMessage(new int[2] { t1.Id, t2.Id }));
+        if (messageResponse == null)
+            return;
+        var mes = messageResponse.ReadMessage<MatchErrorMessage>();
+        switch (mes.Error) {
+            case IsAddedMessageTypes.Success:
+                new AppCommand(app => app.AddTeamWithPlayersToMatch(t1)).Dispatch();
+                new AppCommand(app => app.AddTeamWithPlayersToMatch(t2)).Dispatch();
+                new AppCommand(app => app.StartMatch(mes.Match)).Dispatch();
+                break;
+            case IsAddedMessageTypes.Fail:
+                new AppCommand(app => app.HandleMatchMessage("Команда не може брати участь у трьох іграх поспіль! Перезавантажте сторінку")).Dispatch();
+                break;
+        }
+    }
+
+    public async Task
+    DeleteMatch(MyTeamsCore.Match match) {
+        var messageResponse = await Http.SendAndGetMessage(new DeleteMatchMessage(match));
+        if (messageResponse == null)
+            return;
+        var mes = messageResponse.ReadMessage<MatchErrorMessage>();
+        switch (mes.Error) {
+            case IsAddedMessageTypes.Success:
+                new AppCommand(app => app.DeleteMatch(match)).Dispatch();
+                break;
+            case IsAddedMessageTypes.Fail:
+                new AppCommand(app => app.HandleMatchMessage("Ігру вже видалено! Перезавантажте сторінку")).Dispatch();
+                break;
+        }
+    }
+
+
+
+
+    public Team
+    Team1(int id) => Teams.TryGet(x => x.Id == id, out var result) ? result : throw new Exception();
+
+    public async Task
+    GoalTeam1(MyTeamsCore.Match match) {
+        var dbMatch = match.ToDbMatch();
+        if (dbMatch.AGoals > 19) {
+            new AppCommand(app => app.HandleMatchMessage("Too many goals :D")).Dispatch();
+            return; 
+        }
+        dbMatch.AGoals = dbMatch.AGoals + 1;
+        var messageResponse = await Http.SendAndGetMessage(new SetHomeTeamMatchResultMessage(dbMatch));
+        var read = messageResponse.ReadMessage<GoalAddedMessage>();
+        switch (read.Error) {
+            case ResultMessageTypes.Updated:
+                new AppCommand(app => app.HandleMatchResult(dbMatch)).Dispatch();
+                break;
+            case ResultMessageTypes.Decline:
+                new AppCommand(app => app.HandleMatchMessage("Рахунок вже змінено! Перезавантажте сторінку")).Dispatch();
+                break;
+        }
+
+    }
+
+    public async Task
+    GoalTeam2(MyTeamsCore.Match match) {
+        var dbMatch = match.ToDbMatch();
+        if (dbMatch.BGoals > 19) {
+            new AppCommand(app => app.HandleMatchMessage("Too many goals :D")).Dispatch();
+            return;
+        }
+
+        dbMatch.BGoals = dbMatch.BGoals + 1;
+        var messageResponse = await Http.SendAndGetMessage(new SetAwayTeamMatchResultMessage(dbMatch));
+        var read = messageResponse.ReadMessage<GoalAddedMessage>();
+        switch (read.Error) {
+            case ResultMessageTypes.Updated:
+                new AppCommand(app => app.HandleMatchResult(dbMatch)).Dispatch();
+                break;
+            case ResultMessageTypes.Decline:
+                new AppCommand(app => app.HandleMatchMessage("Рахунок вже змінено! Перезавантажте сторінку")).Dispatch();
+                break;
+        }
+    }
+
+    public async Task
+    CancelGoalTeam1(MyTeamsCore.Match match) {
+        if (match.HomeGoals == 0)
+            return;
+        var dbMatch = match.ToDbMatch();
+        dbMatch.AGoals = dbMatch.AGoals - 1;
+        var messageResponse = await Http.SendAndGetMessage(new SetHomeTeamMatchResultMessage(dbMatch));
+        var read = messageResponse.ReadMessage<GoalAddedMessage>();
+        switch (read.Error) {
+            case ResultMessageTypes.Updated:
+                new AppCommand(app => app.HandleMatchResult(dbMatch)).Dispatch();
+                break;
+            case ResultMessageTypes.Decline:
+                new AppCommand(app => app.HandleMatchMessage("Рахунок вже змінено! Перезавантажте сторінку")).Dispatch();
+                break;
+        }
+    }
+
+    public async Task
+    CancelGoalTeam2(MyTeamsCore.Match match) {
+        if (match.AwayGoals == 0)
+            return;
+        var dbMatch = match.ToDbMatch();
+        dbMatch.BGoals = dbMatch.BGoals - 1;
+        var messageResponse = await Http.SendAndGetMessage(new SetAwayTeamMatchResultMessage(dbMatch));
+        var read = messageResponse.ReadMessage<GoalAddedMessage>();
+        switch (read.Error) {
+            case ResultMessageTypes.Updated:
+                new AppCommand(app => app.HandleMatchResult(dbMatch)).Dispatch();
+                break;
+            case ResultMessageTypes.Decline:
+
+                new AppCommand(app => app.HandleMatchMessage("Рахунок вже змінено! Перезавантажте сторінку")).Dispatch();
+                break;
+        }
+    }
+
+    public Dictionary<Player, int>
+    GetGoalsByPlayer() {
+        var result = new Dictionary<Player, int>();
+        foreach (var match in MatchDay.Matches) {
+            foreach (var goal in match.Score.AwayGoals) {
+                if (goal.Player == null)
+                    continue;
+                if (!result.ContainsKey(goal.Player))
+                    result[goal.Player] = 0;
+                result[goal.Player] = result[goal.Player] + 1;
+            }
+            foreach (var goal in match.Score.HomeGoals) {
+                if (goal.Player == null)
+                    continue;
+                if (!result.ContainsKey(goal.Player))
+                    result[goal.Player] = 0;
+                result[goal.Player] = result[goal.Player] + 1;
+            }
+        }
+        return result;
+    }
+
+    public List<MatchDayTeamInput> AddTeamsToMatchDay(List<Player> players) {
+        List<MatchDayTeamInput> teamsToReturn = new();
+        Random random = new Random();
+        var shuffledPlayers = players.OrderBy(x => random.Next()).ToList();
+
+        for (int i = 0; i < 2; i++) {
+            List<MatchDayTeamPlayerInput> teamPlayerInputs = new List<MatchDayTeamPlayerInput>();
+            List<Player> playersToTeam = shuffledPlayers.Skip(i * 6).Take(Math.Min(6, shuffledPlayers.Count - i * 6)).ToList();
+            if(i== 1) {
+                playersToTeam = shuffledPlayers;
+            }
+            
+
+            foreach (var player in playersToTeam) {
+                teamPlayerInputs.Add(new MatchDayTeamPlayerInput(player.Id, player.Name, player.Nickname, player.TelegramId));
+               
+            }
+            shuffledPlayers.RemoveAll(p => playersToTeam.Contains(p));
+
+
+            var botTeam = new MatchDayTeamInput(
+                teamName: MatchDay.Teams[i].Name,
+                players: teamPlayerInputs.ToArray());
+
+            teamsToReturn.Add(botTeam);
+        }
+
+        return teamsToReturn;
+    }
+}

@@ -1,0 +1,50 @@
+﻿
+.team-red {
+    background: #7d4f4f;
+}
+
+.team-blue {
+    background: #7799ac;
+}
+
+.team-green {
+    background: #426748;
+}
+
+
+table tr:first-child td:first-child {
+    border-top-left-radius: 10px;
+}
+
+table tr:first-child td:last-child {
+    border-top-right-radius: 10px;
+}
+
+table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+table {
+    white-space: nowrap;
+}
+
+
+table thead {
+    color: cadetblue;
+    border-style: hidden;
+}
+table tbody {
+    border-style: hidden;
+}
+
+.date {
+    background: #17212b;
+    border-color: #17212b;
+    border-radius: 4px;
+    margin-right: 5px;
+    color: cadetblue;
+}

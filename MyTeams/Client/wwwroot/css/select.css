@@ -1,0 +1,16 @@
+﻿.select-swap {
+    width: 100%;
+    min-width: 10ch;
+    max-width: 23ch;
+    border: 2.5px solid;
+    border-color: cadetblue;
+    border-radius: 0.25em;
+    padding: 0.25em 0.5em;
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: 1.1;
+    background-color: #17212b;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+    position: relative;
+    
+}

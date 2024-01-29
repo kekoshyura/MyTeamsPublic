@@ -1,0 +1,27 @@
+﻿@inherits InputBase<bool>
+
+<div class="custom-checkbox-container">
+    <input class="form-check-input custom-checkbox" type="checkbox" id="@Id" checked="@CurrentValue" @onchange="HandleChange" />
+    <label class="form-check-label custom-checkbox-lable" for="@Id">@LabelText</label>
+</div>
+
+
+@code {
+    [Parameter] public string LabelText { get; set; }
+    [Parameter] public string Id { get; set; }
+
+    private void HandleChange(ChangeEventArgs e) {
+            CurrentValue = (bool)e.Value; ;
+            ValueChanged.InvokeAsync(CurrentValue);
+    }
+
+    protected override bool TryParseValueFromString(string value, out bool result, out string validationErrorMessage) {
+        if (bool.TryParse(value, out result)) {
+            validationErrorMessage = null;
+            return true;
+        }
+
+        validationErrorMessage = "Введіть коректне значення true або false.";
+        return false;
+    }
+}

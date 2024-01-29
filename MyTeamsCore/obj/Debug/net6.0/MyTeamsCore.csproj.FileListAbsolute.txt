@@ -1,0 +1,11 @@
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\bin\Debug\net6.0\MyTeamsCore.deps.json
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\bin\Debug\net6.0\MyTeamsCore.dll
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\bin\Debug\net6.0\MyTeamsCore.pdb
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\obj\Debug\net6.0\MyTeamsCore.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\obj\Debug\net6.0\MyTeamsCore.AssemblyInfoInputs.cache
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\obj\Debug\net6.0\MyTeamsCore.AssemblyInfo.cs
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\obj\Debug\net6.0\MyTeamsCore.csproj.CoreCompileInputs.cache
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\obj\Debug\net6.0\MyTeamsCore.dll
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\obj\Debug\net6.0\refint\MyTeamsCore.dll
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\obj\Debug\net6.0\MyTeamsCore.pdb
+C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeamsCore\obj\Debug\net6.0\ref\MyTeamsCore.dll

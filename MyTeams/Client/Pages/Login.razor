@@ -1,0 +1,32 @@
+﻿@page "/login"
+@using System.Net
+@inject HttpClient Http
+
+<EditForm Model="UserInput" OnSubmit="OnSubmit">
+    <div>
+        <label>Login</label>
+        <InputText id="login" @bind-Value="@UserInput.UserName" class="form-control"></InputText>
+    </div>
+    <div>
+        <label>Password</label>
+        <InputText id="password" @bind-Value="@UserInput.Password" class="form-control"></InputText>
+    </div>
+    <button type="submit" class="btn-primary">Create</button>
+</EditForm>
+
+@code {
+    [CascadingParameter] App App { get; set; }
+    UserInput UserInput { get; set; } = new UserInput();
+
+    public async Task
+    OnSubmit() {
+        var result = await Http.PostAsJsonAsync<UserInput>("api/UserLogin", UserInput);
+        if (result.StatusCode != HttpStatusCode.OK)
+            return;
+        var accessToken = await result.Content.ReadAsStringAsync();
+        if (accessToken == null)
+            throw new InvalidOperationException("Failed to parse access token from json");
+        var sessionUser = new SessionUser(UserInput.UserName, accessToken);
+        App = App with { User = sessionUser };
+    }
+}

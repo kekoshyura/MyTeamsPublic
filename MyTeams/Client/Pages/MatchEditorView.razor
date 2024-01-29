@@ -1,0 +1,13 @@
+﻿@page "/match-editor"
+@if (MatchEditor != null) {
+    <MatchView  Match=@MatchEditor.Match MatchEditor="MatchEditor"/>
+}
+@code {
+    [Parameter] public MatchEditor? MatchEditor { get; set; }
+    [CascadingParameter] public App App { get; set; }
+    protected override async Task
+    OnInitializedAsync() {
+        MatchEditor = App.MatchEditor;
+    }
+
+}

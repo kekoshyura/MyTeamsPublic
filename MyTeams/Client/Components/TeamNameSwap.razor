@@ -1,0 +1,55 @@
+﻿@inject IPlayerService PlayersService
+@inject ITeamService TeamService
+@inject IMatchService MatchService
+
+
+<h3>TeamNameSwap</h3>
+@foreach(var team in Teams) {
+    <div class="row">
+        <div class="row-content gap_1x space-between">
+            <div class="no-wrap">@team.Name</div>
+            <DropDownMenu>
+                <MenuHeader>
+                    <IconButton Class="button-main icon-button" Icon="Icons.swap_horiz"></IconButton>
+                </MenuHeader>
+                <MenuItems>
+                    @foreach(var teams1 in Teams) {
+                            <DropDownItem Class="no-wrap" OnClick="() => TeamNameSwap1(team.Name, teams1.Name)">@teams1.Name</DropDownItem>
+                    }
+                    
+                </MenuItems>
+            </DropDownMenu>
+        </div>
+    </div>
+}
+@code {
+    [Parameter] public MatchDay MatchDay { get; set; }
+    [CascadingParameter] public App App { get; set; }
+    public List<MyTeamsCore.Match> CurrentMatches => MatchDay.Matches;
+    public List<Team> Teams => MatchDay.Teams;
+    public Dictionary<int, string> TeamNames { get; } = new();
+
+    public async Task
+    TeamNameSwap1(string oldName, string newName) {
+        var swapedTeam = Teams.Find(x => x.Name == oldName);
+        var swappingTeam = Teams.Find(x => x.Name == newName);
+        swappingTeam.Name = oldName;
+        swapedTeam.Name = newName;
+        var team1 = new Team(id: swapedTeam.Id, name: swapedTeam.Name, players: swapedTeam.Players, subTeams: new List<Team>());
+        var team2 = new Team(id: swappingTeam.Id, name: swappingTeam.Name, players: swappingTeam.Players, subTeams: new List<Team>());
+        await Http.SendMessage(new RenameTeamMessage(team1));
+        await Http.SendMessage(new RenameTeamMessage(team2));
+        await App.GetTeams();
+        TeamNames[swapedTeam.Id] = string.Empty;
+        StateHasChanged();
+    }
+
+    public void
+    FillBindName(int id) {
+        if (!TeamNames.ContainsKey(id)) {
+            TeamNames.Add(id, string.Empty);
+        }
+
+    }
+
+}

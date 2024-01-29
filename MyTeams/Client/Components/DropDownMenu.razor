@@ -1,0 +1,51 @@
+﻿@inject IJSRuntime JsRuntime
+
+<div @ref="Menu" class="menu @Class" menu>
+    <div @ref="HeaderElement" class="menu-header column @HeaderClass">
+        @if (Header != null) {
+            @Header
+        }
+        @if (MenuHeader != null) {
+            @MenuHeader
+        }
+    </div>
+    <div @ref="@MenuItemsContainer" class="menu-items__container @MenuItemsContainerClass" style="@MenuItemsContainerStyle">
+        <CascadingValue Value="MenuItemsContainer" Name="ItemsContainer">
+            <div class="menu__menu-items full-height">
+                <div class="block">
+                    @MenuItems
+                </div>
+            </div>
+        </CascadingValue>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Header { get; set; }
+    [Parameter] public RenderFragment? MenuHeader {get; set;}
+    [Parameter] public RenderFragment MenuItems {get; set;}
+    [Parameter] public string MenuItemsContainerStyle {get;set;} = string.Empty;
+    [Parameter] public string MenuItemsContainerClass {get;set;}
+    [Parameter] public string HeaderClass { get; set; }
+
+    ElementReference MenuItemsContainer {get; set;}
+    ElementReference Menu {get; set;}
+    ElementReference HeaderElement {get; set;}
+
+    List<string> ExcludingSelectors { get; set; } = new List<string>() { "icon-button", "s" };
+
+    protected override async Task
+    OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) 
+            await JsRuntime.InvokeVoidAsync("main.menu.setupMenu", Menu, HeaderElement, MenuItemsContainer, new {hideOnClick = true, hideOnMouseOut = true}, ExcludingSelectors.ToArray() );
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+    
+    public async Task
+    Show() => await MenuItemsContainer.AddClass("menu_opened", JsRuntime);
+
+    public async Task
+    Hide() => await MenuItemsContainer.RemoveClass("menu_opened", JsRuntime);
+    
+} 

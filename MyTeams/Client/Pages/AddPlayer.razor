@@ -1,0 +1,43 @@
+﻿@page "/addplayer"
+@using MyTeams.Client.Services
+@using MyTeamsCore
+@using MyTeamsCore.Common
+@inject HttpClient Http
+@inject IPlayerService players
+@inject NavigationManager NavigationManager
+
+Add Player
+<EditForm Model="NewPlayerInput" OnSubmit="AddNewPlayer">
+    <div>
+        <label for="name">Name</label>
+        <InputText id="firstname" @bind-Value="@NewPlayerInput.Name" class="form-control"></InputText>
+    </div>
+    <div>
+        <label for="nickname">Nickname</label>
+        <InputText id="nickname" @bind-Value="@NewPlayerInput.Nickname" class="form-control"></InputText>
+    </div>
+    <div>
+        <label for="telegramId">Telegram Id</label>
+        <InputText id="telegramId" @bind-Value="@NewPlayerInput.TelegramId" class="form-control"></InputText>
+    </div>
+    <button type="submit" class="date" style="padding: 8px; margin-top: 5px">Create</button>
+</EditForm>
+
+@code {
+    [CascadingParameter] public App App { get; set; }
+    PlayerInput NewPlayerInput { get; set; } = new PlayerInput();
+
+    public async Task
+    AddNewPlayer() {
+        var newPlayer = new Player(
+                id: 0,
+                name: NewPlayerInput.Name,
+                nickname: NewPlayerInput.Nickname,
+                telegramId: int.Parse(NewPlayerInput.TelegramId)
+        );
+
+        new AppCommand(app => app.BeginAddingPlayer(newPlayer)).Dispatch();
+        NavigationManager.NavigateTo("players");
+
+    }
+}

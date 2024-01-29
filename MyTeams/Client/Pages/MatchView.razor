@@ -1,0 +1,220 @@
+﻿@page "/match"
+@using MyTeamsCore
+@using MyTeamsCore.Common
+@inject NavigationManager NavigationManager
+
+<div style="grid-gap: 10px; margin-bottom: 20px">
+    <div class="row">
+        <IconButton Class="button-main" Icon="Icons.Undo" OnClick="() => MoveBack()" Style="margin-right:5px;"></IconButton>
+    </div>
+    <div class="row">
+        <div class="column match-day">
+            <div class="row gy-2" style="grid-gap: 10px;margin-block: 6px">
+                <div class="px-3" style="display: flex; flex-direction: row; margin-inline: 5px; justify-content: center">
+                    @if (!Match.IsFinished && MatchEditor.CanEditScore) {
+                        <IconButton Class="button-main" Icon="Icons.Remove" OnClick="() => CancelGoalTeam1(Match)" Style="margin-right:5px;"></IconButton>
+                        <IconButton Class="button-main" Icon="Icons.Add" OnClick="() => GoalTeam1(Match)"></IconButton>
+                    }
+                    <div class="px-3 btn @Match.HomeTeam.GetTeamColor()" style="width: 100px;">
+                        @Match.HomeTeam
+                    </div>
+                    <div class="px-3 align-self-center">
+                        @Match.HomeGoals
+                    </div>
+                    <div class="px-3 align-self-center">
+                        -
+                    </div>
+                    <div class="px-3 align-self-center">
+                        @Match.AwayGoals
+                    </div>
+                    <div class="px-3 btn @Match.AwayTeam.GetTeamColor()" style="width: 100px; margin-right:5px;">
+                        @Match.AwayTeam
+                    </div>
+                    @if (!Match.IsFinished && MatchEditor.CanEditScore) {
+                        <IconButton Class="button-main" Icon="Icons.Remove" OnClick="() => CancelGoalTeam2(Match)" Style="margin-right:5px;"></IconButton>
+                        <IconButton Class="button-main" Icon="Icons.Add" OnClick="() => GoalTeam2(Match)"></IconButton>
+                    }
+                </div>
+            </div>
+            <div class="row gy-2">
+                <div class="row-content gap_2x">
+                    <div class="btn button-main container @IsSelected(1).N("priority_middle")" @onclick="() => SelectedTabId = 1"> Goals </div>
+                    <div class="btn button-main container @IsSelected(1).N("priority_middle")" @onclick="() => SelectedTabId = 2">Players </div>
+                </div>
+            </div>
+            <div class="row gy-2" style="grid-gap: 10px;margin-block: 6px">
+                <div class="px-3" style="display: flex; flex-direction: row; margin-inline: 5px;">
+                    @switch (SelectedTabId) {
+                        case 1:
+                            <div class="row full-width">
+                                <div class="row-content">
+                                    <div class="column container">
+                                        @foreach(var goal in Match.Score.HomeGoals) {
+                                            <SelectBox
+                                                TValue="Player"
+                                                OnSelectedValueChanged="player => SetGoal(player, goal)"
+                                                SelectedValue="(Player?)goal.Player"
+                                                Values="GetPlayers(Match.HomeTeam).ToList()">
+                                                <ItemTemplate>
+                                                    @if(context != null) {
+                                                        <div class="button-main container">@(context.Name)</div>
+                                                    }
+                                                    
+                                                </ItemTemplate>
+                                                <SelectedItemTemplate>
+                                                    @if (context == null) {
+                                                        <IconButton Class="btn button-main" Icon="Icons.Add"></IconButton>
+                                                    }
+                                                    else {
+                                                        <div class="button-main container">@(context.Name)</div>
+                                                    }
+                                                </SelectedItemTemplate>
+                                            </SelectBox>
+                                        }
+                                    </div>
+                                    <div class="column container">
+                                        @foreach(var goal in Match.Score.AwayGoals) {
+                                            <SelectBox
+                                                TValue="Player"
+                                                OnSelectedValueChanged="player => SetGoal(player, goal)"
+                                                SelectedValue="(Player?)goal.Player"
+                                                Values="GetPlayers(Match.AwayTeam).ToList()">
+                                                <ItemTemplate>
+                                                    @if(context != null) {
+                                                        <div class="button-main container">@(context.Name)</div>
+                                                    }
+                                                    
+                                                </ItemTemplate>
+                                                <SelectedItemTemplate>
+                                                    @if (context == null) {
+                                                        <IconButton Class="btn button-main" Icon="Icons.Add"></IconButton>
+                                                    }
+                                                    else {
+                                                        <div class="button-main container">@(context.Name)</div>
+                                                    }
+                                                </SelectedItemTemplate>
+                                            </SelectBox>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            break;
+                        case 2:
+                            <div class="row">
+                                <TeamView Team="Match.HomeTeam" Match="Match"/>
+                                <TeamView Team="Match.AwayTeam" Match="Match" />
+                            </div>
+                            break;
+                        }
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public MyTeamsCore.Match Match { get; set; }
+    [Parameter] public MatchEditor MatchEditor { get; set; }
+    [CascadingParameter] MainLayout Window { get; set; }
+    [CascadingParameter] App App { get; set; }
+    public int SelectedTabId { get; set; } = 1;
+
+
+    public async Task
+    SetGoal(Player player, Goal goal) {
+        if (Match.IsFinished) {
+            new AppCommand(app => app.ShowMessage("Please contact the administrator for editing access.")).Dispatch();
+            return;
+        }
+        goal.Player = player;
+        var dbGoal = new DbMatchGoal(id: goal.Id, matchId: Match.Id, playerGoalId: player.Id, playerPassId: goal.Assist?.Id ?? 0);
+        await Http.SendMessage(new SetGoalMessage(dbGoal));
+        goal.Id = dbGoal.Id;
+        if (Match.Score.AwayGoals.TryGet(x => x.Id == goal.Id, out var matchGoal)){
+            Match.Score.AwayGoals.Remove(matchGoal);
+            Match.Score.AwayGoals.Add(goal);
+        }
+        else if (Match.Score.HomeGoals.TryGet(x => x.Id == goal.Id, out var homeGoal)){
+            Match.Score.HomeGoals.Remove(homeGoal);
+            Match.Score.HomeGoals.Add(goal);
+        }
+
+        var sessionMatch = App.LastMatchDay.Matches.Find(x => x.Id == Match.Id);
+        App.Goals.ReplaceByIdOrAdd(dbGoal);
+        sessionMatch.Score = Match.Score;
+        Window.CallStateHasChanged();
+    }
+
+    public bool
+    IsSelected(int tabId) => SelectedTabId == tabId;
+
+    public async Task
+    GoalTeam1(MyTeamsCore.Match match) {
+        if (!MatchEditor.CanEditScore) {
+            new AppCommand(app => app.ShowMessage("Please contact the administrator for editing access.")).Dispatch();
+            return;
+        }
+        var dbMatch = match.ToDbMatch();
+        dbMatch.AGoals = dbMatch.AGoals + 1;
+        await Http.SendMessage(new SetHomeTeamMatchResultMessage(dbMatch));
+        App.HandleMatchResult(dbMatch);
+        Match = App.GetMatch(dbMatch);
+    }
+
+    public async Task
+    GoalTeam2(MyTeamsCore.Match match) {
+        if (!MatchEditor.CanEditScore) {
+            new AppCommand(app => app.ShowMessage("Please contact the administrator for editing access.")).Dispatch();
+            return;
+        }
+        var dbMatch = match.ToDbMatch();
+        dbMatch.BGoals = dbMatch.BGoals + 1;
+        await Http.SendMessage(new SetAwayTeamMatchResultMessage(dbMatch));
+        App.HandleMatchResult(dbMatch);
+        Match = App.GetMatch(dbMatch);
+    }
+
+    public async Task
+    CancelGoalTeam1(MyTeamsCore.Match match) {
+        if (!MatchEditor.CanEditScore) {
+            new AppCommand(app => app.ShowMessage("Please contact the administrator for editing access.")).Dispatch();
+            return;
+        }
+        if (match.HomeGoals == 0)
+            return;
+        var dbMatch = match.ToDbMatch();
+        dbMatch.AGoals = dbMatch.AGoals - 1;
+        await Http.SendMessage(new SetHomeTeamMatchResultMessage(dbMatch));
+        App.HandleMatchResult(dbMatch);
+        Match = App.GetMatch(dbMatch);
+    }
+
+    public async Task
+    CancelGoalTeam2(MyTeamsCore.Match match) {
+        if (!MatchEditor.CanEditScore) {
+            new AppCommand(app => app.ShowMessage("Please contact the administrator for editing access.")).Dispatch();
+            return;
+        }
+        if (match.AwayGoals == 0)
+            return;
+        var dbMatch = match.ToDbMatch();
+        dbMatch.BGoals = dbMatch.BGoals - 1;
+        await Http.SendMessage(new SetAwayTeamMatchResultMessage(dbMatch));
+        App.HandleMatchResult(dbMatch);
+        Match = App.GetMatch(dbMatch);
+    }
+
+    public IEnumerable<Player?>
+    GetPlayers(Team team) {
+        yield return null;
+        foreach (var player in team.Players) {
+            yield return player;
+        }
+    }
+
+    public void
+    MoveBack() {
+        NavigationManager.NavigateTo("");
+    }
+}

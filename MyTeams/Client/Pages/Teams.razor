@@ -1,0 +1,115 @@
+﻿@page "/teams"
+@using MyTeams.Client.Services
+@using MyTeamsCore
+@using System.Collections.Immutable;
+@inject HttpClient Http
+@inject ITeamService TeamsService
+@inject IMatchService MatchService
+@inject NavigationManager NavigationManager
+<PageTitle>Teams</PageTitle>
+
+<h1>Teams</h1>
+
+@if (teams == null) {
+    <p><em>Loading...</em></p>
+}
+else {
+    <div class="container">
+        <div class="row" style="grid-gap: 10px">
+            <div class="container">
+                <div class="row" style="grid-gap: 10px">
+                    @foreach (var team in teams) {
+                        <div class="col-sm fit-content">
+                        
+                            <div>@team.Name</div>
+                            <div class="horizontal-separator"></div>
+                            @foreach(var player in team.Players) {
+                                <div>@player.Name (@player.Nickname)</div>
+                            }
+                            @if (App.UserCanEdit())
+                            {
+                                <button class="btn btn-primary" @onclick="() => RemoveTeam(team)">Remove Team</button>
+                                <button class="btn btn-primary" @onclick="() => StartRenaming(team)">Rename</button>
+                                @if (renamingId == team.Id)
+                                {
+                                    <EditForm Model="newName" OnSubmit="Rename">
+                                        <div>
+                                            <label for="name">Name</label>
+                                            <InputText id="firstname" @bind-Value="@newName" class="form-control"></InputText>
+                                        </div>
+                                        <button type="submit" class="btn-primary">Rename</button>
+                                    </EditForm>
+                                }
+                            }
+
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @if(AppSession.UserCanEdit()){
+            <div>
+                <button class="btn btn-primary" @onclick="AddTeam">Add Team</button>
+            </div>
+        }
+    </div>
+    @error
+}
+
+@code {
+    private List<Team> teams { get; set; } = new List<Team>();
+    private ImmutableList<DbMatch> matches { get; set; } = ImmutableList<DbMatch>.Empty;
+    [CascadingParameter] App App { get; set; }
+    public string newName { get; set; } = string.Empty;
+    private int renamingId { get; set; } = -1;
+
+    private string error { get; set; }
+
+    protected override async Task
+    OnInitializedAsync() {
+        try {
+            if(App.DatabaseCache == null) {
+                new AppCommand(app => app = app.LoadLastMatchDay()).Dispatch();
+            }
+            else {
+                teams = await App.GetTeams();
+                matches = App.Matches;
+            }
+        }
+        catch (Exception exception) {
+            error = exception.Message;
+            StateHasChanged();
+        }
+
+    }
+
+    public void
+    AddTeam() {
+        NavigationManager.NavigateTo("addteam");
+    }
+
+    public async Task
+    RemoveTeam(Team team) {
+        await Http.SendMessage(new RemoveTeamMessage(team));
+        teams = await App.GetTeams();
+    }
+
+    public void
+    StartRenaming(Team team) {
+        renamingId = team.Id;
+    }
+
+
+    public async Task
+    Rename() {
+        var team = teams.Find(x => x.Id == renamingId);
+
+        renamingId = -1;
+        if (team == null)
+            return;
+        team = new Team(id: team.Id, name: newName, players: team.Players, subTeams: new List<Team>());
+        await Http.SendMessage(new RenameTeamMessage(team));
+        teams = await App.GetTeams();
+    }
+}

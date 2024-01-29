@@ -1,0 +1,184 @@
+@page "/stats"
+
+@using MyTeams.Client.Services
+@using MyTeamsCore
+@using MyTeamsCore.Common
+@using System.ComponentModel.Design
+@using System.Data.SqlTypes
+@using System.Security.Cryptography.X509Certificates
+@using App = MyTeams.Client.App
+@using System.Collections.Immutable;
+@inject HttpClient Http
+@inject IPlayerService PlayersService
+@inject ITeamService TeamService
+@inject IMatchService MatchService
+@inject App Session
+
+@if (Report.Stats.Count == 0) {
+    <span class="table-cell__winrate">Loading data..</span>
+    }
+    else {
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0">
+            <div style="display: flex; flex-direction: row">
+                <div class="container" style="text-align: center;display: inline-block;padding-left: 0; cursor: pointer;">
+                <button style="margin-top: 5px;" class="button-main-show date @(App.Report.PlayersStatsSeason == PlayersStatsSeason.AllTime ? "active" : "")" @onclick="() => ShowSeason(PlayersStatsSeason.AllTime)">All time</button>
+                <button style="margin-top: 5px;" class="button-main-show date @(App.Report.PlayersStatsSeason == PlayersStatsSeason.Season1 ? "active" : "")" @onclick="() => ShowSeason(PlayersStatsSeason.Season1)">Season 1</button>
+                <button style="margin-top: 5px;" class="button-main-show date @(App.Report.PlayersStatsSeason == PlayersStatsSeason.Season2 ? "active" : "")" @onclick="() => ShowSeason(PlayersStatsSeason.Season2)">Season 2</button>
+                </div>
+            </div>
+        <div class="container-name" style="margin-top: 5px;display: flex; justify-content: end;">
+           <DropDownMenu MenuItemsContainerStyle="display: flex; justify-content: space-between; align-items: center; margin-left: 242px">
+               <MenuHeader>
+                    <IconButton  Class="btn-change icon-button" Icon="Icons.list"></IconButton>
+                </MenuHeader>
+                <MenuItems>
+                    @foreach (var item in Columns) {
+                        <DropDownItem OnClick="() => ToggleColumn(item, Report.PlayersStatsSeason)">
+                            <CheckboxIconButton Class="btn-change icon-button"
+                                                    IsChecked="Report.Columns.Contains(item)" ></CheckboxIconButton>@item
+                        </DropDownItem>
+                    }
+                </MenuItems>
+           </DropDownMenu>
+            
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Player</th>
+                @foreach (var item in Report.Columns.OrderBy(e => e).ToList()) {
+                    <td>@RenderStatHeader(item)</td>
+                }
+                   
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var (index, player) in Report.Stats.WithIndex()) {
+                   
+                    <tr class="stats-table" style="margin-left:40px">
+                        <td class="table-cell__win-draw-lose">@index</td>
+                        <td>@($"{player.Player.Name} ({player.Player.Nickname})")</td>
+                    @foreach (var col in Report.Columns.OrderBy(e => e).ToList()) {
+                                <td>@RenderStatCell(col, player)</td>
+                            }
+                    </tr>
+                }
+            </tbody>
+        </table>
+}
+
+@functions {
+
+    RenderFragment
+    RenderStatCell(PlayerReportColumns column, PlayerStats stats) {
+        return column switch {
+            PlayerReportColumns.Matches => RenderCell(stats, playersStats => playersStats.Matches),
+            PlayerReportColumns.Wins => RenderCell(stats, playersStats => playersStats.Wins),
+            PlayerReportColumns.Draws => RenderCell(stats, playersStats => playersStats.Draws),
+            PlayerReportColumns.Loses => RenderCell(stats, playersStats => playersStats.Loses),
+            PlayerReportColumns.GoalsAvg => RenderCell(stats, playersStats => playersStats.GoalsAverage),
+            PlayerReportColumns.GoalsAgainstAvg => RenderCell(stats, playersStats => playersStats.GoalsAgainstAverage),
+            PlayerReportColumns.WinRate => RenderWinRate(stats),
+        };
+    }
+
+    RenderFragment
+    RenderStatHeader(PlayerReportColumns column) {
+        return column switch{
+            PlayerReportColumns.Matches => RenderHeader(columnTitle: "M", sortFunc: playerStats => playerStats.Matches),
+            PlayerReportColumns.Wins => RenderHeader(columnTitle: "W", sortFunc: playerStats => playerStats.Wins),
+            PlayerReportColumns.Draws => RenderHeader(columnTitle: "D", sortFunc: playerStats => playerStats.Draws),
+            PlayerReportColumns.Loses => RenderHeader(columnTitle: "L", sortFunc: playerStats => playerStats.Loses),
+            PlayerReportColumns.GoalsAvg => RenderHeader(columnTitle: "GFa", sortFunc: playerStats => playerStats.GoalsAverage),
+            PlayerReportColumns.GoalsAgainstAvg => RenderHeader(columnTitle: "GAa", sortFunc: playerStats => playerStats.GoalsAgainstAverage),
+            PlayerReportColumns.WinRate => RenderHeader(columnTitle: "WinRate", sortFunc: playerStats => playerStats.WinRate)
+        };
+    }
+
+   
+
+    RenderFragment
+    RenderHeader(string columnTitle, Func<PlayerStats, IComparable> sortFunc) =>@<th style="cursor: pointer" @onclick="() => OrderPlayers(sortFunc)">@columnTitle</th>;
+
+    RenderFragment
+    RenderCell(PlayerStats stats, Func<PlayerStats, IComparable> sortFunc) => @<span class="priority_middle table-cell__games">@sortFunc(stats)</span>;
+
+    RenderFragment RenderWinRate(PlayerStats player) =>
+    @<td>
+        @if (PlayerRatingChanges.TryGetValue(player.Player.Id, out var difference) && difference != 0)
+            {
+                <span class="table-cell__winrate">@player.WinRate </span>
+                <span style="color: @GetDifferenceColor(difference)">@HumanizeDifference(Math.Round(difference, 1))</span>
+            }
+        else {
+                <td class="table-cell__winrate">@player.WinRate</td>
+            }
+    </td>;
+}
+
+@code {
+    [CascadingParameter] public App App { get; set; }
+
+
+    public Dictionary<int, double> PlayerRatingChanges { get; set; } = new Dictionary<int, double>();
+    public ImmutableList<PlayerReportColumns> Columns { get; set; } = Enum.GetValues(typeof(PlayerReportColumns))
+    .Cast<PlayerReportColumns>()
+    .ToImmutableList();
+    public PLayersReport Report => App.Report;
+
+
+    protected override async Task
+    OnInitializedAsync() {
+        if(App.DatabaseCache.IsEmpty)
+            new AppCommand(app => app = app.LoadLastMatchDay()).Dispatch();
+
+        var stats = App.GetPlayerStatsUntil()
+                .Where(player => !player.Player.Name.StartsWith("+"))
+                .Where(stats => stats.Matches > 1).OrderByDescending(team => team.WinRate).ToImmutableList();
+
+
+        var previousStats = App.GetPlayerStatsUntil(App.GetMatchDay(App.LastDbMatchDay.Id)).Where(player => !player.Player.Name.StartsWith("Unknown") && !player.Player.Name.StartsWith("+")).OrderByDescending(team => team.WinRate).ToList();
+        foreach (var current in Report.Stats) {
+            if (previousStats.TryGet(x => x.Player.Id == current.Player.Id, out var player))
+                PlayerRatingChanges[player.Player.Id] = current.WinRate - player.WinRate;
+        }
+        new AppCommand(app => app.UpdatePlayersReport(stats, PlayersStatsSeason.AllTime, Columns)).Dispatch();
+    }
+
+    public void
+    OrderPlayers(Func<PlayerStats, IComparable> getValue) {
+        var newReport = App.Report with {
+                Stats = Report.sortOrder == MyTeamsCore.SortOrder.Descending
+                            ? Report.Stats.OrderByDescending(stats => getValue(stats)).ToImmutableList()
+                                    : Report.Stats.OrderBy(stats => getValue(stats)).ToImmutableList(),
+                sortOrder = Report.sortOrder == MyTeamsCore.SortOrder.Descending ? Report.sortOrder = SortOrder.Ascending : Report.sortOrder = SortOrder.Descending
+        };
+        App = App with { Report = newReport };
+    }
+
+    public string
+    GetDifferenceColor(double difference) => difference < 0 ? "#ff6666" : "#26b050";
+
+    public string
+    HumanizeDifference(double difference) => difference < 0 ? $"{difference}" : $"+{difference}";
+
+    public void
+    ShowSeason(PlayersStatsSeason season) {
+        var stats = App.GetPlayerStatsSeason(season).ToImmutableList();
+        new AppCommand(app => app.UpdatePlayersReportWithSeason(stats, season)).Dispatch();
+    }
+
+    private void ToggleColumn(PlayerReportColumns column, PlayersStatsSeason season) {
+        if (!Report.Columns.Contains(column)) {
+            var newList = Report.Columns.Add(column);
+            new AppCommand(app => app.UpdatePlayersReport(Report.Stats.ToImmutableList(), season, newList)).Dispatch();
+        }
+        else {
+            var newList = Report.Columns.Remove(column);
+            new AppCommand(app => app.UpdatePlayersReport(Report.Stats.ToImmutableList(), season, newList)).Dispatch();
+        }
+    }
+}

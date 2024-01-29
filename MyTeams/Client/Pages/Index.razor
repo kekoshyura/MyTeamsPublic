@@ -1,0 +1,26 @@
+﻿@page "/"
+@using MyTeams.Client.Services
+@using MyTeamsCore
+@using MyTeamsCore.Common
+@using System.ComponentModel.Design
+@using App = MyTeams.Client.App
+@inject HttpClient Http
+@inject IPlayerService PlayersService
+@inject ITeamService TeamService
+@inject NavigationManager NavigationManager
+<PageTitle>MyTeams</PageTitle>
+<MatchDayView MatchDay="App.LastMatchDay"></MatchDayView>
+
+@code {
+    [CascadingParameter] public App App { get; set; }
+    
+    protected override async Task
+    OnInitializedAsync() {
+        try {
+            new AppCommand(app => app = app.LoadLastMatchDay()).Dispatch();
+        }
+        catch (Exception exception) {
+            StateHasChanged();
+        }
+    }
+}

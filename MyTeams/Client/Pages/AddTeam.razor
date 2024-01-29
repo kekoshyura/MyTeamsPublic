@@ -1,0 +1,368 @@
+﻿@page "/addteam"
+@using MyTeams.Client.Inputs
+@using MyTeamsCore
+@using System.Data
+@using MyTeamsCore.Common
+@using System.Collections.Immutable;
+@inject HttpClient Http
+@inject IPlayerService PlayersService
+@inject ITeamService TeamService
+@inject NavigationManager NavigationManager
+
+
+
+<EditForm Model="NewTeam" OnSubmit="AddNewTeam">
+    @if(Teams.Count == 0) {
+        <h2>Select players for match day</h2>
+    }
+
+    <div class="d-flex">
+        <div class="table-container" style="width: 100%">
+            <table class="table">
+                <thead>
+                    <tr style="color : whitesmoke">
+                        <th>Name</th>
+                        <th>Nickname</th>
+                        <th>TelegramId</th>
+                    </tr>
+                </thead>
+                <tbody class="stats-table">
+                    @foreach (var player in FreePlayers) {
+                        <tr>
+                            <td>@player.Name</td>
+                            <td>@player.Nickname</td>
+                            <td>@player.TelegramId</td>
+                            @if (PlayersInTeam.Count < 15 && selectedMatchDayType == MatchDayType.Default) {
+                                <button type="button" class="btn-primary" @onclick="() => AddPlayer(player)" style="color: #26b050; padding: 5px; margin-top:8px">+</button>
+                            }
+                            else if (PlayersInTeam.Count < 12 && selectedMatchDayType == MatchDayType.Short) {
+                                <button type="button" class="btn-primary" @onclick="() => AddPlayer(player)" style="color: #26b050; padding: 5px; margin-top:8px">+</button>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    @if (PlayersInTeam.Count < 12 || selectedMatchDayType == MatchDayType.Short) {
+        <br />
+        <div style="display: flex; flex-direction: column;">
+            <lable for="matchDayType">Select match day type</lable>
+            <select id="matchDayType" class="select-swap" @bind="@selectedMatchDayType">
+                @foreach (var season in Enum.GetValues(typeof(MatchDayType))) {
+                    <option style="color:cadetblue; font-family:sans-serif;font-size: 1rem;" value="@season">@season</option>
+                }
+            </select>
+        </div>
+    }
+
+
+
+    @if (selectedMatchDayType == MatchDayType.Default) {
+        @if (isManually == null) {
+            @if(PlayersInTeam.Count == 15) {
+                <div>
+                    <br />
+                    <h2>
+                        You can create teams <button class="btn btn-outline-light" @onclick="() => isManually = true">manually</button> or
+                        <button class="btn btn-outline-light" @onclick="() => GenerateMatchDayTeams(3)">automatically</button>
+                    </h2>
+                </div>
+            }
+
+            @if (PlayersInTeam.Count > 0)
+            {
+                <div class="table" style="color:whitesmoke">
+                    <h3>Players in your match day</h3>
+                    <div class="row" style="grid-gap: 10px">
+                        <div style="width: 300px">
+                            <table class="table">
+                                <thead>
+                                    <tr style="color : whitesmoke">
+                                        <th>Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="stats-table">
+                                    @foreach (var player in PlayersInTeam)
+                                    {
+                                        <tr>
+                                            <td>@player.Name</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else {
+            @if ((bool)isManually) {
+
+                <div class="table" style="color:whitesmoke">
+                    <br />
+                    <h3>@(Teams.Count != 3 ? "Players in your match day" : "Teams in your match day")</h3>
+                    <div class="row" style="grid-gap: 10px">
+                        <div style="width: 300px">
+                            <table class="table">
+                                @if (_players.Count != 0)
+                                {
+                                    <thead>
+                                        <tr style="color : whitesmoke">
+                                            <th>Name</th>
+                                        </tr>
+                                    </thead>
+                                }
+                                <tbody class="stats-table">
+                                    @foreach (var player in _players) {
+                                            <tr>
+                                                <td>@player.Name</td>
+                                                @if (Players.Count < 5) {
+                                                <button type="button" class="btn-primary" @onclick="() => AddTeamPlayer(player)" style="color: #26b050; padding: 5px; margin-top:8px">+</button>
+                                                } 
+                                            </tr>
+                                        }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    @if (Teams.Count < 3) {
+                        <select id="select" class="select-swap" @bind="@SelectedTeamName">
+                            <option style="color: cadetblue; background-color: #17212b; font-family:sans-serif;"
+                                    value='' disabled selected hidden>Select team name</option>
+                            @foreach (var names in Names) {
+                                <option style="color:cadetblue; font-family:sans-serif;font-size: 1rem;" value="@names.TeamName">@names.TeamName</option>
+                                if (Names.Count == 1) {
+                                    SelectedTeamName = names.TeamName;
+                                }
+                            }
+                        </select>
+                    }
+
+                </div>
+                <div>
+                    @foreach (var player in Players) {
+                       
+                        <div>@player.PlayerName</div>
+                    }
+                </div>
+                @if(Teams.Count != 3) {
+                    <button disabled="@(Players.Count < 5 || SelectedTeamName == string.Empty)" type="submit" class="button-main button-create">Create Team</button>
+                }
+            }
+        }
+    }
+    else {
+        @if (PlayersInTeam.Count > 0)
+        {
+            <div class="table" style="color:whitesmoke">
+                <br />
+                <h3>@(Teams.Count != 3 ? "Players in your match day" : "Teams in your match day")</h3>
+                <div class="row" style="grid-gap: 10px">
+                    <div style="width: 300px">
+                        <table class="table">
+                            <thead>
+                                <tr style="color : whitesmoke">
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody class="stats-table">
+                                @foreach (var player in PlayersInTeam)
+                                {
+                                    <tr>
+                                        <td>@player.Name</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+       }
+    }
+
+
+    <div class="row" style="margin-left: 1px">
+            @foreach (var teams in Teams){
+                    <div class="col-sm fit-content container @GetTeamColor(teams)" style="border-radius: 4px; margin-right: 6px; margin-top: 5px;">
+                            <div class="container-name">
+                                @($"{teams.TeamName}")
+                            </div>
+                        @foreach (var player in teams.Players) {
+                            <div>@player.PlayerName (@player.PlayerNickname)</div>
+                        }
+                    </div>
+            }
+    </div>
+   
+</EditForm>
+
+@if (selectedMatchDayType == MatchDayType.Short && Teams.Count == 0) {
+    <button disabled="@(PlayersInTeam.Count > 12 || PlayersInTeam.Count < 8)" @onclick="() => GenerateMatchDayTeams(2)" class="button-main button-create">Create Short MatchDay</button>
+}
+
+@if ((selectedMatchDayType == MatchDayType.Default && Teams.Count ==3) && Teams.Count !=0){
+    <button @onclick="() => AddMatchday()" class="button-main button-create">Create MatchDay</button>
+
+}
+
+
+
+
+
+@code {
+    [CascadingParameter] public App App { get; set; }
+    MatchDayTeamInput NewTeam { get; set; } = new MatchDayTeamInput();
+    ImmutableList<Player> FreePlayers { get; set; } = ImmutableList<Player>.Empty;
+    ImmutableList<Player> PlayersInTeam { get; set; } = ImmutableList<Player>.Empty;
+    private List<Player> _players = new List<Player>();
+    public string SelectedTeamName { get; set; } = string.Empty;
+    public List<MatchDayTeamPlayerInput> Players = new List<MatchDayTeamPlayerInput>();
+    public List<MatchDayTeamInput> Teams = new List<MatchDayTeamInput>();
+    private bool? isManually = null;
+    private MatchDayType selectedMatchDayType = MatchDayType.Default;
+
+    protected override async Task
+    OnInitializedAsync(){
+        try
+        {
+            FreePlayers = await App.GetPlayers();
+        }
+        catch (Exception _)
+        {
+        }
+
+    }
+
+    public string
+    GetTeamColor(MatchDayTeamInput team) =>
+        team.TeamName switch {
+            "Red" => "team-red",
+            "Green" => "team-green",
+            _ => "team-blue"
+        };
+
+
+
+    public void 
+    RemoveTeamName(TeamNamesData teamName){
+        Names.Remove(teamName);
+    }
+
+    public async Task
+    AddNewTeam(){
+        var botTeam = new MatchDayTeamInput(
+            teamName: SelectedTeamName,
+            players: Players.ToArray()
+        );
+        Teams.Add(botTeam);
+        NewTeam = new MatchDayTeamInput();
+        Players = new List<MatchDayTeamPlayerInput>();
+        foreach (var names in Names)
+        {
+            if (names.TeamName == SelectedTeamName)
+            {
+                RemoveTeamName(names);
+                break;
+            }
+        }
+        SelectedTeamName = string.Empty;
+
+        if (_players.Count == 5) {
+            foreach (var p in _players) {
+                Players.Add(new MatchDayTeamPlayerInput(p.Id, p.Name, p.Nickname, p.TelegramId));
+            }
+            _players.Clear();
+            var existTeamName = Names.FirstOrDefault();
+            SelectedTeamName = existTeamName.TeamName;
+        }
+
+    }
+
+    public void GenerateMatchDayTeams(int teamsCount) {
+        Random random = new Random();
+        var shuffledPlayers = _players.OrderBy(x => random.Next()).ToList();
+        var playersCount = _players.Count;
+
+        for (int i = 0; i < teamsCount; i++) {
+            List<Player> playersToTeam = new();
+            if(teamsCount == 2) {
+                playersToTeam = shuffledPlayers.Skip(i * playersCount/2).Take(playersCount/2).ToList();
+            }
+            else {
+                isManually = false;
+                playersToTeam = shuffledPlayers.Skip(i * 5).Take(5).ToList();
+            }
+            foreach (var player in playersToTeam) {
+                AddTeamPlayer(player);
+            }
+            var botTeam = new MatchDayTeamInput(
+            teamName: Names[i].TeamName,
+            players: Players.ToArray());
+            Teams.Add(botTeam);
+            Players = new List<MatchDayTeamPlayerInput>();
+        }
+    }
+
+    public void
+    AddPlayer(Player player){
+        FreePlayers = FreePlayers.Remove(player);
+        PlayersInTeam = PlayersInTeam.Add(player);
+        _players.Add(player);
+    }
+
+    private void
+    AddTeamPlayer(Player player) {
+        Players.Add(new MatchDayTeamPlayerInput(player.Id, player.Name, player.Nickname, player.TelegramId));
+        _players.Remove(player);
+
+    }
+
+    public async Task
+    AddMatchday(){
+        var day = new MatchDayInput(Teams.ToArray());
+        var message = await Http.SendAndGetMessage(new AddMatchDayMessage(day));
+        var res = message.ReadMessage<DbTeamsMessage>();
+        if(res.Teams.Count == 2) {
+            await Http.SendMessage(new AddMatchMessage(new int[2] { res.Teams[0].Id, res.Teams[1].Id }));
+        }
+        new AppCommand(app => {
+            if(app.LastMatchDay == null) 
+                app.LoadLastMatchDay();
+            else {
+                if (app.DatabaseCache.MatchDays.TryGet(x => x.Id == app.LastMatchDay.Id, out var matchDayAtCache)) {
+                    var newMatchDaysList = app.DatabaseCache.MatchDays.Add(matchDayAtCache);
+                    var newDbCache = app.DatabaseCache with { MatchDays = newMatchDaysList };
+                    app = app with { DatabaseCache = newDbCache };
+                }
+            }
+            app = app with { LastMatchDay = app.GetMatchDay(app.LastDbMatchDay.Id) };
+            return app;
+        }).Dispatch();
+        new AppCommand(app => app.ReplaceLastMatchDay(newMatchDay: app.GetMatchDay(app.LastDbMatchDay.Id))).Dispatch();
+        NavigationManager.NavigateTo("");
+    }
+
+
+    private void HandleSelectChange(ChangeEventArgs e) {
+        if (Enum.TryParse(e.Value?.ToString(), out MatchDayType selected)) {
+            selectedMatchDayType = selected;
+        }
+    }
+
+    public class TeamNamesData{
+
+        public string TeamName { get; set; }
+    }
+    List<TeamNamesData> Names = new List<TeamNamesData>{
+        new TeamNamesData(){TeamName = "Green" },
+        new TeamNamesData(){TeamName = "Red"},
+        new TeamNamesData(){TeamName = "Blue"}
+    };
+
+}
+

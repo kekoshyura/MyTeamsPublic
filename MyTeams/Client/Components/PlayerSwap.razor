@@ -1,0 +1,39 @@
+﻿@using MyTeamsCore.Common
+@using MyTeams.Client.Services
+@using System.Collections.Immutable;
+
+<div class="col-sm fit-content container @Team.GetTeamColor()" style="border-radius: 4px; margin-right: 6px; margin-left: 0px; padding-left: 0px;">
+    
+    <div class="horizontal-separator"></div>
+    @foreach (var player in Team.Players) {
+        <div class="row">
+            <div class="row-content gap_1x space-between">
+                <div class="no-wrap">@player.Name (@player.Nickname)</div>
+                <DropDownMenu>
+                    <MenuHeader>
+                        <IconButton Class="btn-change icon-button_micro" Icon="Icons.swap_horiz"></IconButton>
+                    </MenuHeader>
+                    <MenuItems>
+                        @foreach (var otherPlayer in FreePlayers) {
+                            <DropDownItem Class="no-wrap" OnClick="() => ReplaceTeamPlayer(otherPlayer, player, App)">@otherPlayer.Name (@otherPlayer.Nickname)</DropDownItem>
+                        }
+                    </MenuItems>
+                </DropDownMenu>
+            
+            </div>
+        </div>
+    }
+</div>
+@code {
+    [Parameter] public Team Team { get; set; }
+    [Parameter] public MatchDay MatchDay { get; set; }
+    [CascadingParameter] MainLayout Window { get; set; }
+    [CascadingParameter] public App App {get; set;}
+    public ImmutableList<Player> Players => App.DatabaseCache.Players;
+    public List<Player> FreePlayers => Players.Where(player => MatchDay.Teams.All(team => team.Players.All(teamPlayer => teamPlayer.Id != player.Id))).ToList();
+    private string error { get; set; }
+
+    public async Task
+    ReplaceTeamPlayer(Player addPlayer, Player removePlayer, App app) =>
+        new AppCommand(app => app.SwitchPlayerInTeam(addPlayer, removePlayer, Team.Id)).Dispatch();
+}

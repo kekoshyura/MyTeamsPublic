@@ -1,0 +1,12 @@
+﻿.lable-style {
+    font-family:sans-serif;
+    color: cadetblue;
+    margin-top: 2px;
+}
+.swap-container{
+    margin-top:2px;
+    max-width:100px;
+}
+.no-wrap1{
+    cursor: pointer;
+}

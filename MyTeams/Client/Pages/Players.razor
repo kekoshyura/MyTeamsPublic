@@ -1,0 +1,66 @@
+﻿@page "/players"
+@using MyTeams.Client.Services
+@using MyTeamsCore
+@using System.Collections.Immutable;
+@inject HttpClient Http
+@inject IPlayerService PlayersService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Players</PageTitle>
+
+<h1>Players</h1>
+
+@if (players == null) {
+    <p><em>Loading...</em></p>
+}
+else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Nickname</th>
+                <th>TelegramId</th>
+            </tr>
+        </thead>
+        <tbody class="stats-table">
+            @foreach (var player in players) {
+                <tr>
+                    <td>@player.Id</td>
+                    <td>@player.Name</td>
+                    <td>@player.Nickname</td>
+                    <td>@player.TelegramId</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (AppSession.UserCanEdit()) {
+        <button class="button-main-show date" @onclick="AddPlayer">Add Player</button>
+    }
+    @error
+}
+
+@code {
+    [CascadingParameter] public App App { get; set; }
+    private ImmutableList<Player> players => App.DatabaseCache.Players;
+
+    private string error { get; set; }
+
+    protected override async Task 
+    OnInitializedAsync() {
+        try {
+            if(App.DatabaseCache.Players.Count == 0) {
+                new AppCommand(app => app.LoadLastMatchDay()).Dispatch();
+            }
+        }
+        catch (Exception  exception) {
+            error = exception.Message;
+        }
+        
+    }
+
+    public void 
+    AddPlayer() {
+        NavigationManager.NavigateTo("addplayer");
+    }
+}

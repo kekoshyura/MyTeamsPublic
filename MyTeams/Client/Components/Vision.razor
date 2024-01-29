@@ -1,0 +1,15 @@
+﻿@using System.Diagnostics
+
+<button class="icon-button @Class"
+        style="@Style">
+    <Icon Value="@Icon"></Icon>
+</button>
+
+@code {
+    public Icons Icon => IsChecked ? Icons.visibility : Icons.visibility_off;
+    [Parameter] public bool IsChecked { get; set; }
+
+    private void ToggleVisibility() {
+        IsChecked = !IsChecked;
+    }
+}

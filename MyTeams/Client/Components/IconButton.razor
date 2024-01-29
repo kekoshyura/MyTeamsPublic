@@ -1,0 +1,19 @@
+﻿@using System.Diagnostics
+
+<button class="icon-button @Class"
+    disabled="@(Disabled)"
+    @onclick=OnClick
+    @onclick:stopPropagation
+    @onpointerdown:stopPropagation
+    style="@Style">
+    <Icon Value="@Icon" Class="@IconClass"/>
+</button>
+
+@code {
+
+    [Parameter] public Icons Icon {get;set;}
+    [Parameter] public bool Disabled {get; set;}
+    [Parameter] public string? HotKey { get;set;}
+    [Parameter] public EventCallback OnClick { get;set;}
+    [Parameter] public string IconClass { get; set; }
+}

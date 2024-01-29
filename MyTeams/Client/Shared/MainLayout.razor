@@ -1,0 +1,84 @@
+﻿@using MyTeams.Client.Dialogs
+@using MyTeamsCore;
+@inherits LayoutComponentBase
+<CascadingValue Value="this">
+<div class="page @GetPageClass()"  style="height: 100%">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main class="window window__content">
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+    @if (App.Dialog != null) {
+        <div class="dialog-container">
+            <Dialog>
+                <ChildContent>
+                @{
+                    @switch (App.Dialog) {
+                        case TeamPlayersDialog teamPlayersDialog:
+                            var team = teamPlayersDialog.Team;
+                            var stats = teamPlayersDialog.TeamsStats;
+                                        <div class="col-sm container @GetTeamColor(team)">
+                                @if (!stats.IsEmpty)
+                                {
+                                                    <div>@($"{team.Name} ({stats.Rating} [{stats.Goals}|{stats.Against}])")</div>
+                                }
+                                            <div class="horizontal-separator"></div>
+                                @foreach (var player in team.Players)
+                                {
+                                                   <div>@player.Name (@player.Nickname)</div>
+                                }
+                                        </div>
+                        
+                            break;
+                        case MessageDialog messageDialog:
+                            <div class="column centered gap_1x" >
+                                <div class="stretched full-width container">
+                                    @messageDialog.Message
+                                </div>
+                                <button class="btn container button-main" style="font-size:large" @onclick="() => Close()">OK</button>
+                            </div>
+                            break;
+                        }
+                }
+                </ChildContent>
+            </Dialog>
+        </div>
+    }
+</div>
+</CascadingValue>
+
+@code {
+
+    [CascadingParameter] public App App { get; set; }
+
+    public string 
+    GetPageClass() {
+        return "stats-page";
+        if (App.SelectedTab == AppTabs.Stats)
+            return "stats-page";
+        return string.Empty;
+    }
+
+    public string 
+    GetTeamColor(Team team) {
+        return team.Name switch{
+            "Red" => "team-red",
+            "Green" => "team-green",
+            _ => "team-blue"
+        };
+    }
+
+    public void
+    CallStateHasChanged() {
+        StateHasChanged();
+    }
+
+    public void
+    Close() {
+        new AppCommand(app => app.CloseDialog()).Dispatch();
+    }
+}

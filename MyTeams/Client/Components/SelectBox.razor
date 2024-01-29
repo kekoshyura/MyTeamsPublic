@@ -1,0 +1,94 @@
+﻿@typeparam TValue
+@inject IJSRuntime JsRuntime
+@using MyTeamsCore.Common;
+
+<div @ref="HeaderContainer" class="@Class column centered">
+    <CascadingValue Value="this" IsFixed="true">
+        <button @ref="Header" class="menu-header select-box__input row gap_1x centered @SelectedItemClass @(IsDefault(SelectedValue) ? "default" : HighlightNonDefault.T("nondefault"))">
+            <div class="pixel-up selectbox__text">
+                @if (SelectedItemTemplate != null && SelectedOption != null) {
+                    @SelectedItemTemplate(SelectedOption.Value);
+                }
+                else {
+                    @SelectedOption?.ChildContent
+                }
+            </div>
+            <div class="dropdown-indicator"></div>
+        </button>
+        <div class="@ItemsPopupClass scrollable menu-items__container" @ref="Popup" style="max-height: 400px">
+            <div class="block column">
+                @foreach (var option in Options) {
+                    <div class="select-option" @onclick="_ => OnSelectedItemChanged(option.Value)" @onclick:stopPropagation>@option.ChildContent</div>
+                }
+            </div>
+        </div>
+        @if (Values != null){
+            foreach(var value in Values){
+                <SelectOption Value="value">
+                    @if (ItemTemplate != null){
+                        @ItemTemplate(value);
+                    }
+                    else {
+                        <span class="@ItemClass">@value</span>
+                    }
+                </SelectOption>
+            }
+        }
+        else {
+            @ChildContent
+        }
+    </CascadingValue>
+</div>
+                           
+
+@code {
+
+    [Parameter] public TValue SelectedValue { get;set;}
+    [Parameter] public EventCallback<TValue> OnSelectedValueChanged { get;set;}
+    [Parameter] public bool HighlightNonDefault { get; set; } = true;
+    [Parameter] public string SelectedItemClass { get;set;}
+    [Parameter] public string ItemsPopupClass { get;set;}
+    [Parameter] public TValue DefaultValue { get;set;}
+    [Parameter] public RenderFragment ChildContent { get;set;}
+    [Parameter] public IReadOnlyCollection<TValue>? Values { get;set;}
+    [Parameter] public RenderFragment<TValue>? ItemTemplate { get;set;}
+    [Parameter] public RenderFragment<TValue> SelectedItemTemplate { get;set;}
+    [Parameter] public string ItemClass {get;set;}
+
+    public bool
+    IsDefault(TValue value) => Equals(value, DefaultValue);
+
+    public List<SelectOption<TValue>> Options { get; set;} = new();
+
+    public SelectOption<TValue>?
+    SelectedOption => Options.Count != 0
+        ? Options.TryGet(x => Equals(x.Value, SelectedValue), out var result) ? result
+            : null
+        : null;
+
+    ElementReference Popup { get;set;}
+    ElementReference HeaderContainer { get;set;}
+    ElementReference Header { get;set;}
+
+    public void
+    OnSelectedItemChanged(TValue newItem){
+        if (!Equals(SelectedValue, newItem)){
+            SelectedValue = newItem;
+            OnSelectedValueChanged.InvokeAsync(newItem);
+        }
+    }
+
+    public void
+    OnSelectedOptionInitialized(SelectOption<TValue> option){
+        Options.Add(option);
+        StateHasChanged();
+    }
+    
+    protected override async Task
+    OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) 
+           await JsRuntime.InvokeVoidAsync("main.menu.setupMenu", Header, Header, Popup, new {hideOnClick = true, hideOnMouseOut = true});
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

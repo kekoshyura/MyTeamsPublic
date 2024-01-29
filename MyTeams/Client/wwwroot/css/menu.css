@@ -1,0 +1,134 @@
+﻿.menu {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.menu:hover {color: rgba(var(--font-color-rgb), 0.85);}
+
+.menu-header {
+   white-space: nowrap; 
+}
+
+.menu__root-container {
+    top: 0;
+    left: 0;
+}
+
+.menu__menu-items {
+    overflow: hidden;
+    box-shadow: 0px 3px 10px 3px rgba(0,0,0,0.28);
+    border-radius: 4px;
+    background-color: var(--default-background);
+    white-space: nowrap;
+    max-height: 700px;
+}
+
+.menu-items__container {
+    box-shadow: 0px 3px 10px 3px rgba(0,0,0,0.28);
+    background: var(--default-background);
+    position: fixed;
+    display: none;
+    z-index: 1001;
+    border-radius: 4px;
+    max-height: 90%;
+    overflow: auto;
+    cursor: pointer;
+}
+
+.menu_opened {
+    display: block;
+}
+
+.menu-item {
+    display: flex;
+    padding: 8px calc(2 * 12px);
+    cursor: pointer;
+}
+
+.menu-item.selected {
+     background-color: var(--overlay-selected);
+}
+
+.menu-subitem {
+    display: flex;
+    padding: 8px calc(4 * 12px);
+}
+
+.menu-item.disabled {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.menu-item:hover:not(.no-hover) {
+    background-color: var(--overlay-hovered);
+}
+
+.menu-subitem:hover {
+    background-color: var(--overlay-hovered);
+}
+
+.menu-item_cascading {
+    
+    position: relative;
+}
+
+.menu-item_cascading * {
+        pointer-events: none;
+    }
+
+.menu-item_cascading:hover .menu-items__container {
+    
+    position: absolute;
+}
+
+.cascading-menu__indicator {
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid var(--font-color-low-priority);
+}
+
+.cascading-menu__header{
+    pointer-events: none;
+}
+
+.cascading-menu__submenu {
+    top: 0;
+    left: 100%;
+}
+
+.dropdown-indicator {
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 4px solid var(--font-color-low-priority);
+    transform: rotate(90deg);
+}
+
+    .dropdown-indicator:hover {
+        border-left-color: var(--font-color-middle-priority);
+    }
+
+    .dropdown-indicator.expanded {
+        transform: rotate(-90deg);
+    }
+    
+.context-menu {
+    position: fixed;
+    display: none;
+    z-index: 1001;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.context-menu.opened {
+    display: block;
+}
+
+.context-menu-header {
+    color: var(--text-color-middle-priority);
+}

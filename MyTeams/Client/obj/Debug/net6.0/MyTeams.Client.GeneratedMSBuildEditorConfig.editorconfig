@@ -1,0 +1,141 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = MyTeams.Client
+build_property.RootNamespace = MyTeams.Client
+build_property.ProjectDir = C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeams\Client\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeams\Client
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/AppView.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwVmlldy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/CheckboxIconButton.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDaGVja2JveEljb25CdXR0b24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/CustomCheckBox.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDdXN0b21DaGVja0JveC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/Dialog.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xEaWFsb2cucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/DropDownItem.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xEcm9wRG93bkl0ZW0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/DropDownMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xEcm9wRG93bk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/Icon.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xJY29uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/IconButton.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xJY29uQnV0dG9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/MyTeamsIcon.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xNeVRlYW1zSWNvbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/PlayerSwap.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQbGF5ZXJTd2FwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/SelectBox.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWxlY3RCb3gucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/SelectOption.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZWxlY3RPcHRpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/TeamNameSwap.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUZWFtTmFtZVN3YXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/TeamView.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUZWFtVmlldy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/Vision.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xWaXNpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/AddPlayer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRkUGxheWVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/AddTeam.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRkVGVhbS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/MatchDays.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0Y2hEYXlzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/MatchDayView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0Y2hEYXlWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/MatchEditorView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0Y2hFZGl0b3JWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/MatchView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0Y2hWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/Players.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGxheWVycy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/PlayerStatsView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGxheWVyU3RhdHNWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Pages/Teams.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhbXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Components/TeamsTable.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xUZWFtc1RhYmxlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-q1s3z8m4bn
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-xdj9a1amt7
+
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Client/Shared/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-xbx2iwpbga

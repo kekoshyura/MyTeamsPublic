@@ -1,0 +1,39 @@
+﻿@using System.Net
+@inject HttpClient Http
+<CascadingValue Value="Model">
+    <Router AppAssembly="@typeof(AppView).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingValue>
+@code {
+
+    [Parameter] public App Model { get; set; }
+
+    protected override async Task
+    OnInitializedAsync() {
+        base.OnInitialized();
+        AppHelper.ViewState = this;
+        Model = AppDispatcher.Instance.State;
+        if (Model.User != null)
+            return;
+
+
+        var result = await Http.GetAsync("api/UserLogin/FromCookies");
+        if (result.StatusCode != HttpStatusCode.OK)
+            return;
+        var token = await result.Content.ReadAsStringAsync();
+        if (token == null)
+            return;
+        Model = Model with { User = new SessionUser("admin", token) };
+    }
+
+}

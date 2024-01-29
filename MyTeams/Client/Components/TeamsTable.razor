@@ -1,0 +1,76 @@
+﻿@using MyTeamsCore
+@using MyTeamsCore.Common
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Team</th>
+            <th>Games</th>
+            <th>W</th>
+            <th>D</th>
+            <th>L</th>
+            <th>Goals</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var (index, team) in GetSortedTeams().OrderByDescending(team => team.Points).ThenByDescending(team => team.GoalsDifference).ThenByDescending(team => team.Goals).WithIndex()) {
+        <tr class="btn-primary @GetTeamColor(team.Team.Id)" style="margin-left:40px" @onclick="() => OnTeamClicked.InvokeAsync(team.Team)">
+            <td>@index</td>
+            <td>@team.Name</td>
+            <td>@team.Matches</td>
+            <td>@team.Wins</td>
+            <td>@team.Draws</td>
+            <td>@team.Loses</td>
+            <td>@team.Goals - @team.GoalsAgainst</td>
+            <td>@team.Points</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public List<MyTeamsCore.Match> CurrentMatches { get; set; } = new List<MyTeamsCore.Match>();
+
+    [Parameter]
+    public EventCallback<Team> OnTeamClicked { get; set; }
+
+    [Parameter]
+    public List<Team> Teams { get; set; }
+
+    public IEnumerable<TableTeam>
+    GetSortedTeams() {
+        foreach (var team in Teams) {
+            var teamMathces = CurrentMatches.Where(match => match.HasTeam(team));
+
+            var wins = teamMathces.Count(match => match.TeamWin(team));
+            var draws = teamMathces.Count(match => match.Winner == null);
+            var goals = teamMathces.Sum(match => match.TeamGoals(team));
+            var goalAgainst = teamMathces.Sum(match => match.TeamGoalsAgainst(team));
+
+            yield return new TableTeam(
+                team: team,
+                matches: teamMathces.Count(),
+                goals: goals,
+                goalsAgainst: goalAgainst,
+                wins: wins,
+                draws: draws);
+        }
+    }
+    
+    public string 
+    GetTeamColor(int teamId) {
+        var team = Team(teamId);
+        return team.Name switch{
+        "Red" => "team-red",
+        "Green" => "team-green",
+        _ => "team-blue"
+        };
+    }
+
+    public Team
+    Team(int id) => Teams.TryGet(x => x.Id == id, out var result) ? result : throw new Exception();
+
+}
