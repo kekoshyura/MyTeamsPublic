@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PNq0hCb60VCKzebHG1BblIiLEk0OOpjGxYKkGdk3aYBDY5q4ikCqVXRNMSzVmLrGGE1nYF1FqDokUwjuq+H9jg==",
+  "dgSpecHash": "EPQhC3/CBgUxt4A7UkZyOOwE/tMgmxT2D2yhIvz6AlsbOv/iU1N1iFgNnqFVI0Osclkj3yNMYYRJIG0UcdVhLg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeams\\MyTeams\\MyTeams\\Client\\MyTeams.Client.csproj",
+  "projectFilePath": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeamsPublic\\MyTeams\\Client\\MyTeams.Client.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\xalva\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "C:\\Users\\xalva\\.nuget\\packages\\microsoft.aspnetcore.authentication.core\\2.2.0\\microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",

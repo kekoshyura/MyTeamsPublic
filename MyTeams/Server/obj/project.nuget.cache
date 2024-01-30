@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "MLLCTMJU+jr0J3umVGM7Rl4P9NKZPfXlRlNeYbuLWlETiuVhlecgaNztvAnmqPVscpLGgDxhPj+nJ+T5e+XC9g==",
+  "dgSpecHash": "Q6VIKLDwA1HpdToxDJfmdWv32zEP+2aXwKyB640XdvLJyKt/CpJlFJbDndPOKpS2Ubsg4R5MEnstYzzX7rVKVw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeams\\MyTeams\\MyTeams\\Server\\MyTeams.Server.csproj",
+  "projectFilePath": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeamsPublic\\MyTeams\\Server\\MyTeams.Server.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\xalva\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\xalva\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

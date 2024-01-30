@@ -9,13 +9,13 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = MyTeams.Server
 build_property.RootNamespace = MyTeams.Server
-build_property.ProjectDir = C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeams\Server\
+build_property.ProjectDir = C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeamsPublic\MyTeams\Server\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeams\MyTeams\MyTeams\Server
+build_property.MSBuildProjectDirectory = C:\Users\xalva\OneDrive - lpnu.ua\Документи\Dev\MyTeamsPublic\MyTeams\Server
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeams/MyTeams/MyTeams/Server/UserLogin/Error.cshtml]
+[C:/Users/xalva/OneDrive - lpnu.ua/Документи/Dev/MyTeamsPublic/MyTeams/Server/UserLogin/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = VXNlckxvZ2luXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

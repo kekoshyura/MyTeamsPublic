@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeams\\MyTeams\\MyTeamsCore\\MyTeamsCore.csproj": {}
+    "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeamsPublic\\MyTeamsCore\\MyTeamsCore.csproj": {}
   },
   "projects": {
-    "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeams\\MyTeams\\MyTeamsCore\\MyTeamsCore.csproj": {
+    "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeamsPublic\\MyTeamsCore\\MyTeamsCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeams\\MyTeams\\MyTeamsCore\\MyTeamsCore.csproj",
+        "projectUniqueName": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeamsPublic\\MyTeamsCore\\MyTeamsCore.csproj",
         "projectName": "MyTeamsCore",
-        "projectPath": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeams\\MyTeams\\MyTeamsCore\\MyTeamsCore.csproj",
+        "projectPath": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeamsPublic\\MyTeamsCore\\MyTeamsCore.csproj",
         "packagesPath": "C:\\Users\\xalva\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeams\\MyTeams\\MyTeamsCore\\obj\\",
+        "outputPath": "C:\\Users\\xalva\\OneDrive - lpnu.ua\\Документи\\Dev\\MyTeamsPublic\\MyTeamsCore\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\xalva\\AppData\\Roaming\\NuGet\\NuGet.Config",
